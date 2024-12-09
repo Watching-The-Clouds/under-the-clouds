@@ -1,0 +1,2 @@
+coord.lon,coord.lat,weather.id,weather.main,weather.description,weather.icon,base,main.temp,main.feels_like,main.temp_min,main.temp_max,main.pressure,main.humidity,main.sea_level,main.grnd_level,visibility,wind.speed,wind.deg,clouds.all,dt,sys.type,sys.id,sys.country,sys.sunrise,sys.sunset,timezone,id,name,cod
+-0.1257,51.5085,803,Clouds,broken clouds,04n,stations,281.07,277.52,280.38,281.58,1031,80,1031,1027,10000,6.69,30,75,1733771850,2,268730,GB,1733730865,1733759511,0,2643743,London,200

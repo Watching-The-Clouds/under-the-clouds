@@ -24,7 +24,8 @@ def lambda_handler(event, context):
             event: JSON-formatted document passed when handler invoked
             context (optional): methods/properties related to handler
 
-        Returns: string declaring success or failure
+        Returns: 
+            string declaring success or failure
     """
 
     pass
