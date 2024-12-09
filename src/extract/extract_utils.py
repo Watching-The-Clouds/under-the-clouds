@@ -9,16 +9,6 @@ import io
 # from dotenv import load_dotenv
 # load_dotenv()
 
-def create_s3_client():
-    """
-    Creates an S3 client using boto3.
-
-    Returns:
-        An S3 client
-    """
-
-    return boto3.client("s3")
-
 def make_api_get_request():
     """
     Makes API get request to OpenWeatherMap API.
@@ -35,9 +25,7 @@ def make_api_get_request():
 
     data = response.json()
 
-    flattened_data = flatten_json(data)
-
-    return flattened_data
+    return data
 
 def flatten_json(data):
     """
@@ -88,11 +76,11 @@ def convert_json_to_csv(flattened_data):
     writer.writerow(flattened_data.keys())
     writer.writerow(flattened_data.values())
 
-    csv_output = output.getvalue()
+    converted_data = output.getvalue()
 
     output.close()
 
-    return csv_output
+    return converted_data
 
 def create_directory_structure_and_file_name():
     """
@@ -113,19 +101,25 @@ def create_directory_structure_and_file_name():
 
     return file_name
 
-def store_in_s3(s3_client, csv_output, bucket_name, file_name):
+def create_s3_client():
+    """
+    Creates an S3 client using boto3.
+
+    Returns:
+        An S3 client
+    """
+
+    return boto3.client("s3")
+
+def store_in_s3(s3_client, converted_data, bucket_name, file_name):
     """
     Uploads .csv file to a named AWS S3 bucket.
 
     Parameters:
         s3_client: boto3 S3 client
         csv_output: endpoint data in flattened .csv format
-        bucket_name (str): S3 bucket name
+     put_object   bucket_name (str): S3 bucket name
         file_name (str): S3 file directory and file name
-        """
-    s3_client.put_object(Body=csv_output, Bucket=bucket_name, Key=file_name)
-
-# make_api_get_request()
-# flatten_json(make_api_get_request())
-# convert_json_to_csv(flatten_json())
-# create_directory_structure_and_file_name()
+    """
+    
+    s3_client.put_object(Body=converted_data, Bucket=bucket_name, Key=file_name)

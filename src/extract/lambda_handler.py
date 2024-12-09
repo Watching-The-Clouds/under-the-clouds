@@ -1,6 +1,12 @@
-from extract_utils import create_s3_client
 import logging
-import json
+from extract_utils import (
+    create_s3_client,
+    make_api_get_request,
+    flatten_json,
+    convert_json_to_csv,
+    create_directory_structure_and_file_name,
+    store_in_s3
+)
 
 data_bucket = "ingested_bucket_name"
 code_bucket = "code_bucket_name"
@@ -28,4 +34,16 @@ def lambda_handler(event, context):
             string declaring success or failure
     """
 
-    pass
+    data = make_api_get_request()
+
+    flattened_data = flatten_json(data)
+
+    converted_data = convert_json_to_csv(flattened_data)
+
+    file_name = create_directory_structure_and_file_name()
+
+    s3_client = create_s3_client()
+
+    store_in_s3(s3_client, converted_data, data_bucket, file_name)
+
+    return "Success!"
