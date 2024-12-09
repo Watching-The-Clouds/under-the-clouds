@@ -1,18 +1,18 @@
 resource "aws_s3_bucket" "s3_code" {
     bucket      = "${var.project_name}-code"
     tags        = {
-                    name = "Code Bucket"
-                    environment = "dev"
-                    description = "S3 bucket to store and provide lambda_handler code for lambdas."
+        name = "Code Bucket"
+        environment = "dev"
+        description = "S3 bucket to store and provide lambda_handler code for lambdas."
     }
 }
 
 resource "aws_s3_bucket" "s3_ingestion" {
     bucket      = "${var.project_name}-ingestion"
     tags        = {
-                    name = "Ingestion Bucket"
-                    environment = "dev"
-                    description = "S3 bucket to store extracted JSON from OpenWeather API queries."
+        name = "Ingestion Bucket"
+        environment = "dev"
+        description = "S3 bucket to store extracted JSON from OpenWeather API queries."
     }
 }
 
