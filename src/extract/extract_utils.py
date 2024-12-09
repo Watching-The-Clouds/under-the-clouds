@@ -25,6 +25,8 @@ def make_api_get_request():
 
     data = response.json()
 
+    pprint(data)
+
     return data
 
 def flatten_json(data):
@@ -57,6 +59,8 @@ def flatten_json(data):
 
     flatten(data)
 
+    pprint(flattened_data)
+
     return flattened_data
 
 def convert_json_to_csv(flattened_data):
@@ -80,6 +84,8 @@ def convert_json_to_csv(flattened_data):
 
     output.close()
 
+    print(converted_data)
+
     return converted_data
 
 def create_directory_structure_and_file_name():
@@ -99,6 +105,8 @@ def create_directory_structure_and_file_name():
 
     file_name = f"{year}/{month}/{day}/{time}/GB/London.csv"
 
+    print(file_name)
+    
     return file_name
 
 def create_s3_client():
@@ -123,3 +131,6 @@ def store_in_s3(s3_client, converted_data, bucket_name, file_name):
     """
     
     s3_client.put_object(Body=converted_data, Bucket=bucket_name, Key=file_name)
+
+convert_json_to_csv(flatten_json(make_api_get_request()))
+create_directory_structure_and_file_name()
