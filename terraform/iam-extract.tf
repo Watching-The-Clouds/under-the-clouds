@@ -1,6 +1,6 @@
 resource "aws_iam_role" "extract_role" {
     name                = "extract_role"
-    assume_role_policy  = data.aws_iam_policy_document.assume_role_policy.json 
+    assume_role_policy  = data.aws_iam_policy_document.lambda_policy.json 
 }
 
 data "aws_iam_policy_document" "extract_s3_policy_document" {
