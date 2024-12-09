@@ -27,7 +27,7 @@ resource "aws_s3_bucket" "s3_processing" {
 
 resource "aws_s3_object" "lambda-extract" {
     bucket      = aws_s3_bucket.s3_code.bucket
-    key         = "lambda-extract.zip"
+    key         = "lambda_extract.zip"
     source      = data.archive_file.lambda_extract.output_path
     etag        = filemd5(data.archive_file.lambda_extract.output_path)
     depends_on  = [ aws_s3_object.layer_requests ]
