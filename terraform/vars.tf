@@ -26,6 +26,6 @@ variable "lambda_comp_exclude_list" {
 
 variable "layer_requests_file" {
     type = string
-    default = "../.dependencies/layer_requests.zip"
+    default = "../.remote_deployment/layer_requests.zip"
     ### REMOVE COMMENT WHEN FILE GENERATION HAS BEEN HANDLED!!! ###
 }

@@ -165,3 +165,7 @@ cython_debug/
 .terraform/
 *.terraform*
 *.tfstate*
+
+# Temporary Project Files
+.dependencies
+.remote_deployment
