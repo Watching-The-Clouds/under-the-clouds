@@ -5,8 +5,6 @@ import json
 data_bucket = "ingested_bucket_name"
 code_bucket = "code_bucket_name"
 
-API_KEY = "3db59dd5504605020ae6021efd52b288"
-
 logging.basicConfig(
     level=logging.ERROR, format="%(asctime)s - %(levelname)s - %(message)s"
 )
