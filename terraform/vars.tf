@@ -14,7 +14,7 @@ variable "abv_name" {
 
 variable "lambda_extract_source_dir" {
     type = string
-    default = "${path.module}/../.remote_deployment/lambda_extract/"
+    default = "/../.remote_deployment/lambda_extract/"
     ### ADJUST ACCORDING TO FILE STRUCTURE (unverified)
 }
 
