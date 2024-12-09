@@ -167,5 +167,4 @@ cython_debug/
 *.tfstate*
 
 # Temporary Project Files
-.dependencies
 .remote_deployment
