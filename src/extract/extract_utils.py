@@ -96,12 +96,10 @@ def convert_json_to_csv(flattened_data):
 
 def create_directory_structure_and_file_name():
     """
-    Produces directory structure and file 
-    Parameters:
-        raw data from API endpoint in JSON format
+    Produces directory structure and file name for storage in S3 bucket.
 
     Returns:
-        .csv file
+        string representing directory structure and file name in format "YYYY/MM/DD/00:00.00/GB/London.csv"
     """
 
     date_time_now = datetime.today().isoformat(timespec="seconds")
@@ -114,6 +112,18 @@ def create_directory_structure_and_file_name():
     file_name = f"{year}/{month}/{day}/{time}/GB/London.csv"
 
     return file_name
+
+def store_in_s3(s3_client, csv_output, bucket_name, file_name):
+    """
+    Uploads .csv file to a named AWS S3 bucket.
+
+    Parameters:
+        s3_client: boto3 S3 client
+        csv_output: endpoint data in flattened .csv format
+        bucket_name (str): S3 bucket name
+        file_name (str): S3 file directory and file name
+        """
+    s3_client.put_object(Body=csv_output, Bucket=bucket_name, Key=file_name)
 
 # make_api_get_request()
 # flatten_json(make_api_get_request())
