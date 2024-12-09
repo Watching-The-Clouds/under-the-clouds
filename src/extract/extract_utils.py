@@ -1,6 +1,9 @@
 from pprint import pprint
 import boto3
 import requests
+import os
+
+api_key = os.environ.get('API_KEY')
 
 def create_s3_client():
     """
@@ -13,7 +16,7 @@ def make_api_get_request():
     """
     Creates an S3 client using boto3
     """
-    response = requests.get('https://api.openweathermap.org/data/2.5/weather?q=London&appid=3db59dd5504605020ae6021efd52b288')
+    response = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q=London&appid={api_key}')
 
     data = response.json()
 
