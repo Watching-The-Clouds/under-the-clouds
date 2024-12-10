@@ -29,6 +29,33 @@ def make_api_get_request():
 
     return data
 
+def flatten(x, name=''):
+    """
+    Parameters:
+        x: represents object passed to flatten - initially the entire JSON string, but on subsequent calls can be a dict, a list, or a primitive value (base case)
+        name: name of object passed into function
+
+    Returns:
+        flattened dictionary
+    """
+    flattened_list = []
+
+    if isinstance(x, dict):
+        for key, value in x.items():
+            new_key = f'{name}.{key}' if name else key
+            flattened_list.extend(flatten(value, new_key))
+
+    elif isinstance(x, list):
+        for _, item in enumerate(x):
+            flatten(item, name)
+
+    else:
+        flattened_list.append((name,x))
+
+    print(flattened_list)
+
+    return dict(flattened_list)
+
 def flatten_json(data):
     """
     Function uses recursion to take a JSON object and flatten it to create key:value pairs that can later be used for column titles.
@@ -40,28 +67,20 @@ def flatten_json(data):
         flattened data from API endpoint
     """
 
-    flattened_data = {}
+    flattened_data = []
 
-    # 'x' represents object passed to flatten - initially the entire JSON string, but on subsequent calls can be a dict, a list, or a primitive value (base case)
+    for x in data["list"]:
 
-    for x in data:
+        city_dict = flatten(data["city"])
+        forecast_dict = flatten(x)
+        # print(city_dict)
+        # print(forecast_dict)
 
-        def flatten(x, name=''):
+        flatten_dict = city_dict|forecast_dict
 
-            if isinstance(x, dict):
-                for key in x:
-                    flatten(x[key], name + key + '.')
-
-            elif isinstance(x, list):
-                for _, item in enumerate(x):
-                    flatten(item, name)
-
-            else:
-                flattened_data[name[:-1]] = x
-
-    flatten(data)
-
-    pprint(flattened_data)
+        flattened_data.append(flatten_dict)
+    
+    # pprint(flattened_data)
 
     return flattened_data
 
