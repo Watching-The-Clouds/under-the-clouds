@@ -78,13 +78,8 @@ jobs:
 
       - name: Terraform Plan
         working-directory: terraform
-        run: terraform plan
-
-      # - name: Upload Lambda Layer to S3
-      #   run: |
-      #     aws s3 cp layer.zip s3://under-the-clouds-code/layer_code.zip 
-        # needs actual bucket name
-
+        run: TF_VAR_openweather_api_key=${{ secrets.OPENWEATHER_AP_KEY }} terraform plan
+      
       - name: Terraform Apply
         working-directory: terraform
-        run: terraform apply -auto-approve
+        run: TF_VAR_openweather_api_key=${{ secrets.OPENWEATHER_AP_KEY }} terraform apply -auto-approve
