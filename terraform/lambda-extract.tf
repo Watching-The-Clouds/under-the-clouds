@@ -9,6 +9,11 @@ resource "aws_lambda_function" "lambda_extract" {
     runtime             = "python3.12"
     layers              = [aws_lambda_layer_version.layer_requests.arn]
     depends_on          = [aws_cloudwatch_log_group.extract_log_group]
+    environment {
+      variables = {
+            api_key = var.openweather_api_key
+      }
+    } 
 }
 
 data "archive_file" "lambda_extract" {

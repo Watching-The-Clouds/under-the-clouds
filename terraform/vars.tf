@@ -27,3 +27,8 @@ variable "layer_requests_file" {
     default = "../.remote_deployment/layer_requests.zip"
     ### REMOVE COMMENT WHEN FILE GENERATION HAS BEEN HANDLED!!! ###
 }
+
+variable "openweather_api_key" {
+    type = string
+    default = ""
+}
