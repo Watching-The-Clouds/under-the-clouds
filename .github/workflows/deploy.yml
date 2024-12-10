@@ -73,7 +73,7 @@ jobs:
           rm -rf layer/python
           mkdir -p layer/python
           pip install -r layer_requirements.txt -t layer/python/
-          cd extract_layer && zip -r ../layer.zip ./*
+          zip -r ./layer.zip layer/python
 
       - name: Terraform Plan
         working-directory: terraform
