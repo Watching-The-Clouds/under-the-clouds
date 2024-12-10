@@ -78,8 +78,8 @@ jobs:
 
       - name: Terraform Plan
         working-directory: terraform
-        run: TF_VAR_openweather_api_key=${{ secrets.OPENWEATHER_AP_KEY }} terraform plan
+        run: TF_VAR_openweather_api_key=${{ secrets.OPENWEATHER_API_KEY }} terraform plan
       
       - name: Terraform Apply
         working-directory: terraform
-        run: TF_VAR_openweather_api_key=${{ secrets.OPENWEATHER_AP_KEY }} terraform apply -auto-approve
+        run: TF_VAR_openweather_api_key=${{ secrets.OPENWEATHER_API_KEY }} terraform apply -auto-approve
