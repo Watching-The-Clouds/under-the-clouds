@@ -38,23 +38,23 @@ def flatten(x, name=''):
     Returns:
         flattened dictionary
     """
-    flattened_list = []
-
+    flattened_dict = {}
+    
     if isinstance(x, dict):
         for key, value in x.items():
             new_key = f'{name}.{key}' if name else key
-            flattened_list.extend(flatten(value, new_key))
+            flattened_dict.update(flatten(value, new_key))
 
     elif isinstance(x, list):
         for _, item in enumerate(x):
             flatten(item, name)
 
     else:
-        flattened_list.append((name,x))
+        flattened_dict[name] = x
 
-    print(flattened_list)
+    pprint(flattened_dict)
 
-    return dict(flattened_list)
+    return flattened_dict
 
 def flatten_json(data):
     """
