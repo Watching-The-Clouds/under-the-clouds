@@ -11,7 +11,9 @@ resource "aws_lambda_function" "lambda_extract" {
     depends_on          = [aws_cloudwatch_log_group.extract_log_group]
     environment {
       variables = {
-            api_key = var.openweather_api_key
+            api_key             = var.openweather_api_key
+            ingestion_bucket    = aws_s3_bucket.s3_ingestion.bucket
+            code_bucket         = aws_s3_bucket.s3_code.bucket
       }
     } 
 }
