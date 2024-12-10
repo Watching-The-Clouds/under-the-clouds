@@ -1,4 +1,5 @@
 import logging
+import os
 from extract_utils import (
     create_s3_client,
     make_api_get_request,
@@ -7,9 +8,12 @@ from extract_utils import (
     create_directory_structure_and_file_name,
     store_in_s3
 )
+from dotenv import load_dotenv
 
-data_bucket = "ingested_bucket_name"
-code_bucket = "code_bucket_name"
+load_dotenv()
+
+data_bucket = os.environ.get("INGESTION_BUCKET")
+code_bucket = os.environ.get("CODE_BUCKET")
 
 logging.basicConfig(
     level=logging.ERROR, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -79,3 +83,7 @@ def lambda_handler(event, context):
     except Exception as e:
         logging.error("An unexpected error occurred: %s", e)
         return "An unexpected error occurred. Check logs for details."
+    
+
+if __name__ == "__main__":
+    lambda_handler([],[])

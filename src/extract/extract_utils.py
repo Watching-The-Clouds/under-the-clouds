@@ -18,14 +18,14 @@ def make_api_get_request():
     """
 
     api_key = os.environ.get('API_KEY')
-    endpoint_url = "api.openweathermap.org/data/2.5/weather"
+    endpoint_url = "api.openweathermap.org/data/2.5/forecast"
     location = "London"
 
     response = requests.get(f'https://{endpoint_url}?q={location}&units=metric&appid={api_key}')
 
     data = response.json()
 
-    pprint(data)
+    # pprint(data)
 
     return data
 
@@ -44,18 +44,20 @@ def flatten_json(data):
 
     # 'x' represents object passed to flatten - initially the entire JSON string, but on subsequent calls can be a dict, a list, or a primitive value (base case)
 
-    def flatten(x, name=''):
+    for x in data:
 
-        if isinstance(x, dict):
-            for key in x:
-                flatten(x[key], name + key + '.')
+        def flatten(x, name=''):
 
-        elif isinstance(x, list):
-            for _, item in enumerate(x):
-                flatten(item, name)
+            if isinstance(x, dict):
+                for key in x:
+                    flatten(x[key], name + key + '.')
 
-        else:
-            flattened_data[name[:-1]] = x
+            elif isinstance(x, list):
+                for _, item in enumerate(x):
+                    flatten(item, name)
+
+            else:
+                flattened_data[name[:-1]] = x
 
     flatten(data)
 
@@ -103,7 +105,7 @@ def create_directory_structure_and_file_name():
     day = date_time_now[8:10]
     time = date_time_now[11:]
 
-    file_name = f"{year}/{month}/{day}/{time}/GB/London.csv"
+    file_name = f"GB/London/{year}/{month}/{day}/{time}.csv"
 
     print(file_name)
     
@@ -132,5 +134,4 @@ def store_in_s3(s3_client, converted_data, bucket_name, file_name):
     
     s3_client.put_object(Body=converted_data, Bucket=bucket_name, Key=file_name)
 
-convert_json_to_csv(flatten_json(make_api_get_request()))
-create_directory_structure_and_file_name()
+flatten_json(make_api_get_request())
