@@ -1,0 +1,45 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+      - feature/*
+jobs:
+  run-tests:
+    name: branch-run-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python Setup
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          make create-environment
+          source venv/bin/activate
+          make requirements
+          make dev-setup
+
+      # Uncomment to set up PostgreSQL later in the project
+      # - name: Set up PostgreSQL
+      #   uses: hyness/postgresql-action@v2
+      #   with:
+      #       postgresql version: '13'
+      #       postgresql db: 'test_db'
+      #       postgresql user: 'test_user'
+      #       postgresql password: 'test_password'
+
+      - name: Run Tests and Checks
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          # Uncomment for test database later in the project
+          # DATABASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.REAL_DATABASE_URL || 'postgresql://test_user:test_password@localhost:5432/test_db' }}
+        run: |
+          make run-checks
+
