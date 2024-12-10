@@ -1,10 +1,16 @@
 name: CI/CD Pipeline
 
+
+  
 on:
   push:
     branches:
       - main
       - feature/*  # Adjust as needed for feature branch patterns
+  pull_request:
+    branches:
+      - main
+      - feature/*
 
 jobs:
   run-tests:
