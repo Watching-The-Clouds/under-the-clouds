@@ -68,7 +68,7 @@ def convert_json_to_csv(flattened_data):
     Takes a flattened data structure and converts it into .csv format.
 
     Parameters:
-        raw data from API endpoint in JSON format
+        flattened data from API endpoint in JSON format
 
     Returns:
         .csv file
@@ -126,7 +126,7 @@ def store_in_s3(s3_client, converted_data, bucket_name, file_name):
     Parameters:
         s3_client: boto3 S3 client
         csv_output: endpoint data in flattened .csv format
-     put_object   bucket_name (str): S3 bucket name
+        bucket_name (str): S3 bucket name
         file_name (str): S3 file directory and file name
     """
     
