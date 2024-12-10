@@ -14,18 +14,16 @@ variable "abv_name" {
 
 variable "lambda_extract_source_dir" {
     type = string
-    default = "./.remote_deployment/lambda_extract/"
-    ### ADJUST ACCORDING TO FILE STRUCTURE (unverified)
+    default = "../src/extract/"
 }
 
 variable "lambda_comp_exclude_list" {
     type = list(string)
-    default = [".pytest_cache", "src/__pycache__", "test"]
-    ### ADJUST ACCORDING TO FILE STRUCTURE (unverified)
+    default = [".pytest_cache", "__pycache__", "test"]
 }
 
 variable "layer_requests_file" {
     type = string
-    default = "./.remote_deployment/layer_requests.zip"
+    default = "../.remote_deployment/layer_requests.zip"
     ### REMOVE COMMENT WHEN FILE GENERATION HAS BEEN HANDLED!!! ###
 }

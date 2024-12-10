@@ -19,9 +19,9 @@ resource "aws_s3_bucket" "s3_ingestion" {
 resource "aws_s3_bucket" "s3_processing" {
     bucket      = "${var.project_name}-processing"
     tags        = {
-                    name = "Processing Bucket"
-                    environment = "dev"
-                    description = "S3 Bucket to store processed data from Transformation Lambda"
+        name = "Processing Bucket"
+        environment = "dev"
+        description = "S3 Bucket to store processed data from Transformation Lambda"
     }
 }
 
@@ -36,7 +36,7 @@ resource "aws_s3_object" "lambda-extract" {
 resource "aws_s3_object" "layer_requests" {
     bucket      = aws_s3_bucket.s3_code.bucket
     key         = "layer_requests.zip"
-    source      = var.layer_requests_file
-    etag        = filemd5(var.layer_requests_file)
-    depends_on  = [ var.layer_requests_file]
+    source      = "${path.module}/${var.layer_requests_file}"
+    etag        = filemd5("${path.module}/${var.layer_requests_file}")
+    depends_on  = [ var.layer_requests_file ]
 }

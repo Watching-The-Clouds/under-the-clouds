@@ -3,7 +3,7 @@ resource "aws_lambda_function" "lambda_extract" {
     s3_bucket           = aws_s3_bucket.s3_code.bucket
     s3_key              = "lambda_extract.zip"
     role                = aws_iam_role.extract_role.arn
-    handler             = "extract.lambda_handler"
+    handler             = "lambda_handler.lambda_handler"
     timeout             = 180
     source_code_hash    = data.archive_file.lambda_extract.output_base64sha256
     runtime             = "python3.12"
@@ -13,7 +13,7 @@ resource "aws_lambda_function" "lambda_extract" {
 
 data "archive_file" "lambda_extract" {
     type        = "zip"
-    source_dir  = var.lambda_extract_source_dir
+    source_dir  = "${path.module}/${var.lambda_extract_source_dir}"
     excludes    = var.lambda_comp_exclude_list
-    output_path = "./.remote_deployment/lambda_extract.zip"
+    output_path = "${path.module}/../.remote_deployment/lambda_extract.zip"
 }
