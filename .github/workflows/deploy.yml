@@ -1,7 +1,5 @@
 name: CI/CD Pipeline
 
-
-  
 on:
   push:
     branches:
@@ -30,6 +28,7 @@ jobs:
           make create-environment
           source venv/bin/activate
           make requirements
+          make dev-setup
 
       # Uncomment to set up PostgreSQL later in the project
       # - name: Set up PostgreSQL
