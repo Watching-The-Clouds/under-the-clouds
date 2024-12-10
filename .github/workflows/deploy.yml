@@ -73,15 +73,15 @@ jobs:
           rm -rf layer/python
           mkdir -p layer/python
           pip install -r layer_requirements.txt -t layer/python/
-          zip -r ./layer.zip layer/python
+          zip -r ./.remote_deployment/layer_requests.zipp layer/python
 
       - name: Terraform Plan
         working-directory: terraform
         run: terraform plan
 
-      - name: Upload Lambda Layer to S3
-        run: |
-          aws s3 cp layer.zip s3://under-the-clouds-code/layer_code.zip 
+      # - name: Upload Lambda Layer to S3
+      #   run: |
+      #     aws s3 cp layer.zip s3://under-the-clouds-code/layer_code.zip 
         # needs actual bucket name
 
       - name: Terraform Apply
