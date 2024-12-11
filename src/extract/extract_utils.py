@@ -100,11 +100,7 @@ def convert_to_csv(flattened_data):
         writer.writerow(dict.values())
 
     converted_data = output.getvalue()
-
     output.close()
-
-    # with open("output.csv", 'w') as f:
-    #         f.write(converted_data)
 
     return converted_data
 
