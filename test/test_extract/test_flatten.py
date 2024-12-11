@@ -59,5 +59,3 @@ def test_large_input():
     result = flatten(test_input)
 
     assert result["a.999"] == 999
-
-
