@@ -41,3 +41,13 @@ def test_empty_data():
     result = format_data(test_input)
 
     assert result == []
+
+def test_combines_dicts_correctly():
+    test_input = {'city': {'lat': 1, 'lon':2}, 
+                  'list': [{'pressure': 3, 'temp':4}]}
+
+    result = format_data(test_input)
+
+    expected = [{'lat': 1, 'lon': 2, 'pressure': 3, 'temp': 4}]
+
+    assert result == expected
