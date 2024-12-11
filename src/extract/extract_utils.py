@@ -6,15 +6,15 @@ import os
 import csv
 import io
 
-# from dotenv import load_dotenv
-# load_dotenv()
+from dotenv import load_dotenv
+load_dotenv()
 
 def make_api_get_request():
     """
     Makes API get request to OpenWeatherMap API.
 
     Returns:
-        JSON object
+        Python dictionary containing forecast data for 5 days in 3 hour intervals
     """
 
     api_key = os.environ.get('API_KEY')
@@ -25,46 +25,45 @@ def make_api_get_request():
 
     data = response.json()
 
-    # pprint(data)
-
     return data
 
 def flatten(x, name=''):
     """
+    Uses recursion to flatten object to create key:value pairs that can later be used for column titles.
+
     Parameters:
-        x: represents object passed to flatten - initially the entire JSON string, but on subsequent calls can be a dict, a list, or a primitive value (base case)
+        x: represents object passed to flatten - can be a dict, a list, or a primitive value (base case)
         name: name of object passed into function
 
     Returns:
-        flattened dictionary
+        list of flattened dictionaries
     """
-    flattened_dict = {}
+    flattened_list = []
     
-    if isinstance(x, dict):
+    if isinstance(x, dict):  # Process dictionaries
         for key, value in x.items():
-            new_key = f'{name}.{key}' if name else key
-            flattened_dict.update(flatten(value, new_key))
-
-    elif isinstance(x, list):
-        for _, item in enumerate(x):
-            flatten(item, name)
-
-    else:
-        flattened_dict[name] = x
-
-    pprint(flattened_dict)
-
-    return flattened_dict
-
-def flatten_json(data):
-    """
-    Function uses recursion to take a JSON object and flatten it to create key:value pairs that can later be used for column titles.
+            new_key = f"{name}.{key}" if name else key
+            flattened_list.extend(flatten(value, new_key).items())
     
+    elif isinstance(x, list):  # Process lists
+        for i, value in enumerate(x):
+            new_key = f"{name}.{i}" if name else str(i)
+            flattened_list.extend(flatten(value, new_key).items())
+    
+    else:  
+        flattened_list.append((name, x))
+    
+    return dict(flattened_list)
+
+def format_data(data):
+    """
+    Takes nested data in Python dictionary format and returns list of flattened dictionaries
+
     Parameters:
-        raw data from API endpoint
+        Python dictionary containing forecast data for 5 days in 3 hour intervals (8 forecasts per day for 5 days = 40 forecasts)
 
     Returns:
-        flattened data from API endpoint
+        List containing 40 dictionaries (1 per forecast)
     """
 
     flattened_data = []
@@ -73,23 +72,19 @@ def flatten_json(data):
 
         city_dict = flatten(data["city"])
         forecast_dict = flatten(x)
-        # print(city_dict)
-        # print(forecast_dict)
 
         flatten_dict = city_dict|forecast_dict
 
-        flattened_data.append(flatten_dict)
-    
-    # pprint(flattened_data)
+        flattened_data.append(flatten_dict)    
 
     return flattened_data
 
-def convert_json_to_csv(flattened_data):
+def convert_to_csv(flattened_data):
     """
-    Takes a flattened data structure and converts it into .csv format.
+    Takes a list of flattened dictionaries and converts it into .csv format.
 
     Parameters:
-        flattened data from API endpoint in JSON format
+        List containing 40 dictionaries (1 per forecast)
 
     Returns:
         .csv file
@@ -98,14 +93,17 @@ def convert_json_to_csv(flattened_data):
     output = io.StringIO()
     writer = csv.writer(output)
 
-    writer.writerow(flattened_data.keys())
-    writer.writerow(flattened_data.values())
+    writer.writerow(flattened_data[0].keys())
+
+    for dict in flattened_data:
+        writer.writerow(dict.values())
 
     converted_data = output.getvalue()
 
     output.close()
 
-    print(converted_data)
+    # with open("output.csv", 'w') as f:
+    #         f.write(converted_data)
 
     return converted_data
 
@@ -153,4 +151,4 @@ def store_in_s3(s3_client, converted_data, bucket_name, file_name):
     
     s3_client.put_object(Body=converted_data, Bucket=bucket_name, Key=file_name)
 
-flatten_json(make_api_get_request())
+pprint(convert_to_csv(format_data(make_api_get_request())))
