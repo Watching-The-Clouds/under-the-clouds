@@ -25,7 +25,10 @@ define execute_in_env
 endef
 
 requirements: create-environment
+	$(call execute_in_env, $(PIP) install pip-tools)
+	$(call execute_in_env, pip-compile requirements.in)
 	$(call execute_in_env, $(PIP) install -r ./requirements.txt)
+	
 ## SETUP
 bandit:
 	$(call execute_in_env, $(PIP) install bandit)
