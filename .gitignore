@@ -168,3 +168,6 @@ cython_debug/
 
 # Temporary Project Files
 .remote_deployment
+
+output.txt
+
