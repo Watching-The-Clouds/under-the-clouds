@@ -3,8 +3,8 @@ import os
 from extract_utils import (
     create_s3_client,
     make_api_get_request,
-    flatten_json,
-    convert_json_to_csv,
+    format_data,
+    convert_to_csv,
     create_directory_structure_and_file_name,
     store_in_s3
 )
@@ -25,9 +25,9 @@ def lambda_handler(event, context):
      
     - Create S3 client
     - Make API request
-    - Convert JSON to .csv format
+    - Format data from nested dict to list of flattened dicts
+    - Convert data to .csv format
     - Create file name & directory for storage in S3 bucket
-    - Create report for successful / unsuccessful run
     - Store .csv file in S3 bucket
 
         Parameters:
@@ -47,13 +47,13 @@ def lambda_handler(event, context):
             return "Failed to make API request."
         
         try:
-            flattened_data = flatten_json(data)
+            flattened_data = format_data(data)
         except Exception as e:
             logging.error("Failed to flatten JSON: %s", e)
             return "Failed to flatten JSON."
 
         try:
-            converted_data = convert_json_to_csv(flattened_data)
+            converted_data = convert_to_csv(flattened_data)
         except Exception as e:
             logging.error("Failed to convert JSON to CSV: %s", e)
             return "Failed to convert JSON to CSV."
@@ -84,6 +84,5 @@ def lambda_handler(event, context):
         logging.error("An unexpected error occurred: %s", e)
         return "An unexpected error occurred. Check logs for details."
     
-
 if __name__ == "__main__":
     lambda_handler([],[])
