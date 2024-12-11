@@ -6,8 +6,8 @@ import os
 import csv
 import io
 
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 def make_api_get_request():
     """
@@ -38,6 +38,7 @@ def flatten(x, name=''):
     Returns:
         list of flattened dictionaries
     """
+    
     flattened_list = []
     
     if isinstance(x, dict):  # Process dictionaries
