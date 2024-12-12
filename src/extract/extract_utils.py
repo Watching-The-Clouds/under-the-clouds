@@ -100,11 +100,7 @@ def convert_to_csv(flattened_data):
         writer.writerow(dict.values())
 
     converted_data = output.getvalue()
-
     output.close()
-
-    # with open("output.csv", 'w') as f:
-    #         f.write(converted_data)
 
     return converted_data
 
@@ -151,5 +147,3 @@ def store_in_s3(s3_client, converted_data, bucket_name, file_name):
     """
     
     s3_client.put_object(Body=converted_data, Bucket=bucket_name, Key=file_name)
-
-pprint(convert_to_csv(format_data(make_api_get_request())))

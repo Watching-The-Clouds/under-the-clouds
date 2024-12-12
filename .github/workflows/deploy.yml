@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - feature/*  # Adjust as needed for feature branch patterns
+      - irinasplayground  # Adjust as needed for feature branch patterns
 
 jobs:
   run-tests:
