@@ -1,5 +1,4 @@
-name: CI/CD Pipeline PULL REQUESTS FROM BRANCHES
-
+name: BRANCH PIPELINE
 on:
   pull_request:
     branches:
