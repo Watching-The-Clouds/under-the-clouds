@@ -74,7 +74,8 @@ jobs:
           mkdir -p layer/python
           mkdir -p .remote_deployment
           pip install -r layer_requirements.txt -t layer/python/
-          zip -r ./.remote_deployment/layer_requests.zip layer/python
+          cd layer
+          zip -r ../.remote_deployment/layer_requests.zip python
 
       - name: Terraform Plan
         working-directory: terraform
