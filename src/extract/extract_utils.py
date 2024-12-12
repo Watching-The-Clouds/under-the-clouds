@@ -6,6 +6,9 @@ import os
 import csv
 import io
 
+from dotenv import load_dotenv
+load_dotenv()
+
 def make_api_get_request():
     """
     Makes API get request to OpenWeatherMap API.
@@ -97,11 +100,7 @@ def convert_to_csv(flattened_data):
         writer.writerow(dict.values())
 
     converted_data = output.getvalue()
-
     output.close()
-
-    # with open("output.csv", 'w') as f:
-    #         f.write(converted_data)
 
     return converted_data
 
