@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline PULL REQUESTS FROM BRANCHES
 
 on:
   pull_request:
