@@ -148,5 +148,3 @@ def store_in_s3(s3_client, converted_data, bucket_name, file_name):
     """
     
     s3_client.put_object(Body=converted_data, Bucket=bucket_name, Key=file_name)
-
-pprint(convert_to_csv(format_data(make_api_get_request())))
