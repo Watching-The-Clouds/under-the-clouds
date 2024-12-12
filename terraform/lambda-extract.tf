@@ -3,7 +3,7 @@ resource "aws_lambda_function" "lambda_extract" {
     s3_bucket           = aws_s3_bucket.s3_code.bucket
     s3_key              = "lambda_extract.zip"
     role                = aws_iam_role.extract_role.arn
-    handler             = "lambda_handler.lambda_handler"
+    handler             = "extract.lambda_handler"
     timeout             = 180
     source_code_hash    = data.archive_file.lambda_extract.output_base64sha256
     runtime             = "python3.12"
