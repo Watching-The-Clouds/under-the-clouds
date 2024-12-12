@@ -1,4 +1,4 @@
-from src.extract.extract_utils import make_api_get_request
+from extract_utils import make_api_get_request
 import os
 import pytest
 from unittest.mock import patch, Mock

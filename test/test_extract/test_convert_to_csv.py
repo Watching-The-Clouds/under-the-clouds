@@ -1,7 +1,7 @@
 import io
 import csv
 import pytest
-from src.extract.extract_utils import convert_to_csv 
+from extract_utils import convert_to_csv 
 
 def test_convert_to_csv_basic_functionality():
     """Test that the function correctly converts a list of dictionaries to CSV."""
