@@ -1,4 +1,4 @@
-from src.extract.extract_utils import format_data
+from extract_utils import format_data
 import pytest
 
 test_input = {'city': {'coord': {'lat': 51.5085, 'lon': -0.1257},

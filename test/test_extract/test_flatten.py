@@ -1,4 +1,4 @@
-from src.extract.extract_utils import flatten
+from extract_utils import flatten
 import pytest
 
 def test_returns_dict():
