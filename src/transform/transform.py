@@ -1,3 +1,5 @@
+from transform_utils import create_s3_client, get_data_frame, update_data_frame
+
 def lambda_handler(event, context):
     """
     Function transforms data in csv format from S3 bucke
@@ -18,4 +20,10 @@ def lambda_handler(event, context):
             string declaring success or failure
     """
 
-    pass
+    create_s3_client()
+
+    get_data_frame()
+
+    update_data_frame()
+
+    return "Success!"
