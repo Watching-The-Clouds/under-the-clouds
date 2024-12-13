@@ -8,9 +8,6 @@ from extract_utils import (
     create_directory_structure_and_file_name,
     store_in_s3
 )
-from dotenv import load_dotenv
-
-load_dotenv()
 
 data_bucket = os.environ.get("INGESTION_BUCKET")
 code_bucket = os.environ.get("CODE_BUCKET")

@@ -6,9 +6,6 @@ import os
 import csv
 import io
 
-from dotenv import load_dotenv
-load_dotenv()
-
 def make_api_get_request():
     """
     Makes API get request to OpenWeatherMap API.
