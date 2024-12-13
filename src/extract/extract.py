@@ -38,51 +38,46 @@ def lambda_handler(event, context):
             string declaring success or failure
     """
 
+
     try:
-
-        try:
-            data = make_api_get_request()
-        except Exception as e:
-            logging.error("Failed to make API request: %s", e)
-            return "Failed to make API request."
-        
-        try:
-            flattened_data = format_data(data)
-        except Exception as e:
-            logging.error("Failed to flatten JSON: %s", e)
-            return "Failed to flatten JSON."
-
-        try:
-            converted_data = convert_to_csv(flattened_data)
-        except Exception as e:
-            logging.error("Failed to convert JSON to CSV: %s", e)
-            return "Failed to convert JSON to CSV."
-        
-        try:
-            file_name = create_directory_structure_and_file_name()
-        except Exception as e:
-            logging.error("Failed to create directory and file name: %s", e)
-            return "Failed to create directory and file name."
-
-        try:
-            s3_client = create_s3_client()
-        except Exception as e:
-            logging.error("Failed to create S3 client: %s", e)
-            return "Failed to create S3 client."
-        
-        try:
-            store_in_s3(s3_client, converted_data, data_bucket, file_name)
-        except Exception as e:
-            logging.error("Failed to store file in S3: %s", e)
-            return "Failed to store file in S3."
-        
-        logging.info("Data successfully processed and uploaded!", file_name)
-        print("Success!")
-        return "Success!"
-    
+        data = make_api_get_request()
     except Exception as e:
-        logging.error("An unexpected error occurred: %s", e)
-        return "An unexpected error occurred. Check logs for details."
+        logging.error("Failed to make API request: %s", e)
+        return "Failed to make API request."
+    
+    try:
+        flattened_data = format_data(data)
+    except Exception as e:
+        logging.error("Failed to flatten JSON: %s", e)
+        return "Failed to flatten JSON."
+    try:
+        converted_data = convert_to_csv(flattened_data)
+    except Exception as e:
+        logging.error("Failed to convert JSON to CSV: %s", e)
+        return "Failed to convert JSON to CSV."
+    
+    try:
+        file_name = create_directory_structure_and_file_name()
+    except Exception as e:
+        logging.error("Failed to create directory and file name: %s", e)
+        return "Failed to create directory and file name."
+    try:
+        s3_client = create_s3_client()
+        print(s3_client)
+    except Exception as e:
+        logging.error("Failed to create S3 client: %s", e)
+        return "Failed to create S3 client."
+    
+    try:
+        store_in_s3(s3_client, converted_data, data_bucket, file_name)
+    except Exception as e:
+        logging.error("Failed to store file in S3: %s", e)
+        return "Failed to store file in S3."
+    
+    logging.info("Data successfully processed and uploaded!", file_name)
+    print("Success!")
+    return "Success!"
+
     
 if __name__ == "__main__":
     lambda_handler([],[])
