@@ -25,9 +25,13 @@ resource "aws_cloudwatch_metric_alarm" "error_count_alarm_for_extract_lambda" {
     evaluation_periods          = 1
     metric_name                 = aws_cloudwatch_log_metric_filter.log_errors_for_extract_lambda.name
     namespace                   = "log_errors"
-    period                      = 600 # ADJUST AS NECESSARY
+    period                      = 600
     statistic                   = "SampleCount"
     threshold                   = 1
+    alarm_actions               = [aws_sns_topic.alert_sre.arn]
+    dimensions = {
+        "FunctionName" = "lambda_extract"
+    }
     alarm_description           = "Error logged in Extract Lambda"
     treat_missing_data          = "notBreaching"
     insufficient_data_actions   = []
