@@ -23,11 +23,11 @@ def lambda_handler(event, context):
     """
     Function extracts data from OpenWeatherMap '5 Day / 3 Hour Weather Forecast' API Endpoint: https://openweathermap.org/forecast5
      
-    - Create S3 client
     - Make API request
     - Format data from nested dict to list of flattened dicts
     - Convert data to .csv format
     - Create file name & directory for storage in S3 bucket
+    - Create S3 client
     - Store .csv file in S3 bucket
 
         Parameters:
