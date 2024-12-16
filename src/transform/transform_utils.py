@@ -35,9 +35,11 @@ def update_data_frame():
     pass
 
 def calculate_time_increase():
+    # Still 'per mile' and then multuiply by user input as required for final output
     pass
 
 def calculate_cost_increase():
+    # Still 'per mile' and then multuiply by user input as required for final output
     pass
 
 def convert_to_parquet():
