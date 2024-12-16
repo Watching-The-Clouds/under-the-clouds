@@ -4,6 +4,7 @@ import io
 import os
 
 data_bucket = os.environ.get("INGESTION_BUCKET")
+processed_data_bucket = os.environ.get("PROCESSED_BUCKET") # Not defined yet - what name?
 
 def create_s3_client():
     """
