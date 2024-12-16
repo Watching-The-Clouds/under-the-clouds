@@ -14,24 +14,44 @@ def create_s3_client():
     """
     return boto3.client("s3")
 
-def get_data_frame(s3_client, data_bucket, key):
-    """Fetches and returns a DataFrame from ingested S3 bucket.
+def fetch_csv_from_s3(s3_client, data_bucket, key):
+    """Fetches data in .csv format from ingested S3 bucket.
     
     Parameters:
         s3_client: S3 client
         data_bucket: name of the ingested bucket (stored in .env)
-        key: reference to the file in the S3 bucket     
+        key: reference to the file in the S3 bucket
+
+    Returns:
+        a string containing .csv data    
     """
     try:
         obj = s3_client.get_object(Bucket=data_bucket, Key=key)
-        file_stream = io.StringIO(obj['Body'].read().decode('utf-8'))
+        csv_data = obj['Body'].read().decode('utf-8')
+        return csv_data
+    
+    except Exception as e:
+        print(f"Error fetching file from S3 for key '{key}': {e}")
+        return None
+    
+def convert_csv_to_dataframe(csv_data):
+    """Converts data from .csv format into a Pandas dataframe.
+    
+    Parameters:
+        a string containing .csv data    
+
+    Returns:
+        a Pandas dataframe  
+    """
+    try:
+        file_stream = io.StringIO(csv_data)
         return pd.read_csv(file_stream)
     
     except Exception as e:
-        print(f"Error loading DataFrame for key '{key}': {e}")
+        print(f"Error converting CSV data to DataFrame: {e}")
         return None
-    
-def update_data_frame():
+
+def update_dataframe(df):
     pass
 
 def calculate_time_increase():
