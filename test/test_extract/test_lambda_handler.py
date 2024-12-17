@@ -67,17 +67,18 @@ def test_create_file_name_failure(mock_create_file_name, caplog):
 
 @patch("extract.create_s3_client", side_effect=Exception("S3 client error"))
 def test_create_s3_client_failure(mock_create_s3_client, caplog):
-
+    # Combine all context managers into a single with statement
     with patch("extract.make_api_get_request") as mock_make_api_request, \
          patch("extract.format_data") as mock_format_data, \
          patch("extract.convert_to_csv") as mock_convert_to_csv, \
-         patch("extract.create_directory_structure_and_file_name") as mock_create_file_name:
+         patch("extract.create_directory_structure_and_file_name") as mock_create_file_name, \
+         caplog.at_level(logging.ERROR):
+        
         mock_make_api_request.return_value = {"mock": "data"}
         mock_format_data.return_value = [{"key": "value"}]
         mock_convert_to_csv.return_value = "csv_data"
         mock_create_file_name.return_value = "GB/London/2024/12/11/mock.csv"
 
-    with caplog.at_level(logging.ERROR):
         response = lambda_handler({}, {})
     
     assert response == "Failed to create S3 client."
@@ -86,19 +87,20 @@ def test_create_s3_client_failure(mock_create_s3_client, caplog):
 
 @patch("extract.store_in_s3", side_effect=Exception("S3 storage error"))
 def test_store_in_s3_failure(mock_store_in_s3, caplog):
-    
+    # Combine all context managers into a single with statement
     with patch("extract.make_api_get_request") as mock_make_api_request, \
          patch("extract.format_data") as mock_format_data, \
          patch("extract.convert_to_csv") as mock_convert_to_csv, \
          patch("extract.create_directory_structure_and_file_name") as mock_create_file_name, \
-         patch("extract.create_s3_client") as mock_create_s3_client:
+         patch("extract.create_s3_client") as mock_create_s3_client, \
+         caplog.at_level(logging.ERROR):
+        
         mock_make_api_request.return_value = {"mock": "data"}
         mock_format_data.return_value = [{"key": "value"}]
         mock_convert_to_csv.return_value = "csv_data"
         mock_create_file_name.return_value = "GB/London/2024/12/11/mock.csv"
         mock_create_s3_client.return_value = MagicMock()
 
-    with caplog.at_level(logging.ERROR):
         response = lambda_handler({}, {})
     
     assert response == "Failed to store file in S3."
