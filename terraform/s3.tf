@@ -56,4 +56,4 @@ resource "aws_s3_object" "layer_requests" {
 #   function_name = aws_lambda_function.transform.function_name
 #   principal     = "s3.amazonaws.com"
 #   source_arn    = "aws_s3_bucket.${var.project_name}-ingestion.arn"
-}
+# }
