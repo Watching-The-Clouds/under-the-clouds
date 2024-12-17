@@ -59,3 +59,14 @@ def test_large_input():
     result = flatten(test_input)
 
     assert result["a.999"] == 999
+
+def test_for_additional_keys_in_some_dicts():
+    test_input = [{'a':'b',
+                   'c':'d'},
+                  {'e':'f', 
+                   'g':'h',
+                   'i':{'j':'k'}}]
+
+    expected_output = {'0.a':'b','0.c':'d','1.e':'f', '1.g':'h', '1.i.j':'k'}
+
+    assert flatten(test_input) == expected_output

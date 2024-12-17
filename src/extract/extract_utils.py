@@ -138,7 +138,7 @@ def store_in_s3(s3_client, converted_data, bucket_name, file_name):
 
     Parameters:
         s3_client: boto3 S3 client
-        csv_output: endpoint data in flattened .csv format
+        converted_data: endpoint data in flattened .csv format
         bucket_name (str): S3 bucket name
         file_name (str): S3 file directory and file name
     """

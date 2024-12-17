@@ -3,3 +3,5 @@ requests
 python-dotenv
 pytest
 pytest-cov
+moto
+pandas
