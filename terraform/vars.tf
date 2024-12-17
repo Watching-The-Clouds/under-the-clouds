@@ -4,7 +4,7 @@
 
 variable "project_name" {
     type = string
-    default = "under-the-clouds"
+    default = "watching-the-clouds"
 }
 
 variable "abv_name" {
