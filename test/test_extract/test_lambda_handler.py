@@ -35,11 +35,12 @@ def test_format_data_failure(mock_format_data, caplog):
 def test_convert_to_csv_failure(mock_convert_to_csv, caplog):
     # Arrange
     with patch("extract.make_api_get_request") as mock_make_api_request, \
-         patch("extract.format_data") as mock_format_data:
+         patch("extract.format_data") as mock_format_data, \
+         caplog.at_level(logging.ERROR):
+        
         mock_make_api_request.return_value = {"mock": "data"}
         mock_format_data.return_value = [{"key": "value"}]
 
-    with caplog.at_level(logging.ERROR):
         response = lambda_handler({}, {})
     
     assert response == "Failed to convert JSON to CSV."
