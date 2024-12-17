@@ -40,11 +40,11 @@ resource "aws_iam_policy" "extract_lambda_policy" {
         Effect = "Allow",
         Resource = "arn:aws:logs:eu-west-2:418295700587:log-group:/aws/lambda/lambda_extract:*"
       },
-      {
-        Action = ["secretsmanager:GetSecretValue"],
-        Effect = "Allow",
-        Resource = "arn:aws:secretsmanager:eu-west-2:${data.aws_caller_identity.current.account_id}:secret:api_key*"
-      },
+      # {
+      #   Action = ["secretsmanager:GetSecretValue"],
+      #   Effect = "Allow",
+      #   Resource = "arn:aws:secretsmanager:eu-west-2:${data.aws_caller_identity.current.account_id}:secret:api_key*"
+      # },
       {
         Action = ["sns:Publish"],
         Effect = "Allow",
