@@ -70,4 +70,3 @@ def test_for_additional_keys_in_some_dicts():
     expected_output = {'0.a':'b','0.c':'d','1.e':'f', '1.g':'h', '1.i.j':'k'}
 
     assert flatten(test_input) == expected_output
-
