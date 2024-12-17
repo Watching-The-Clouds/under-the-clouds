@@ -17,6 +17,11 @@ variable "lambda_extract_source_dir" {
     default = "../src/extract/"
 }
 
+variable "lambda_transform_source_dir" {
+    type = string
+    default = "../src/transform/"
+}
+
 variable "lambda_comp_exclude_list" {
     type = list(string)
     default = [".pytest_cache", "__pycache__", "test"]

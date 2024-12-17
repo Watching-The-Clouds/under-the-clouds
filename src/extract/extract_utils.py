@@ -118,7 +118,6 @@ def create_directory_structure_and_file_name():
 
     file_name = f"GB/London/{year}/{month}/{day}/{time}.csv"
 
-    print(file_name)
     
     return file_name
 

@@ -1,3 +1,14 @@
+data "aws_iam_policy_document" "lambda_policy" {
+    statement {
+        effect  = "Allow"
+        actions = ["sts:AssumeRole"]
+        principals {
+            type        = "Service"
+            identifiers = ["lambda.amazonaws.com"] 
+        } 
+    }
+}
+
 resource "aws_iam_role" "extract_role" {
     name                = "extract_role"
     assume_role_policy  = data.aws_iam_policy_document.lambda_policy.json 
@@ -43,10 +54,7 @@ resource "aws_iam_policy" "extract_lambda_policy" {
   })
 }
 
-
-resource "aws_iam_role_policy_attachment" "extract_cloudwatch_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "extract_policy_attachment" {
     role        = aws_iam_role.extract_role.name
-    policy_arn  = aws_iam_policy.extract_cloudwatch_policy.arn
+    policy_arn  = aws_iam_policy.extract_lambda_policy.arn 
 }
-
-### TODO: SNS Policies
