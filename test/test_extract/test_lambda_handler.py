@@ -49,17 +49,18 @@ def test_convert_to_csv_failure(mock_convert_to_csv, caplog):
 
 @patch("extract.create_directory_structure_and_file_name", side_effect=Exception("File name error"))
 def test_create_file_name_failure(mock_create_file_name, caplog):
- 
+    # Combine all context managers into a single with statement
     with patch("extract.make_api_get_request") as mock_make_api_request, \
          patch("extract.format_data") as mock_format_data, \
-         patch("extract.convert_to_csv") as mock_convert_to_csv:
+         patch("extract.convert_to_csv") as mock_convert_to_csv, \
+         caplog.at_level(logging.ERROR):
+        
         mock_make_api_request.return_value = {"mock": "data"}
         mock_format_data.return_value = [{"key": "value"}]
         mock_convert_to_csv.return_value = "csv_data"
 
-    with caplog.at_level(logging.ERROR):
         response = lambda_handler({}, {})
- 
+    
     assert response == "Failed to create directory and file name."
     assert "Failed to create directory and file name: File name error" in caplog.text
 
