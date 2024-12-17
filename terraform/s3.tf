@@ -42,7 +42,8 @@ resource "aws_s3_object" "layer_requests" {
 }
 
 resource "aws_s3_bucket_notification" "ingestion_bucket_notification" {
-  bucket = "aws_s3_bucket.${var.project_name}-ingestion.id"
+  bucket = aws_s3_bucket.s3_ingestion.id
+  depends_on = [aws_s3_bucket.s3_ingestion]
 
   lambda_function {
     lambda_function_arn = aws_lambda_function.lambda_transform.arn
@@ -56,6 +57,7 @@ resource "aws_lambda_permission" "s3_trigger" {
   function_name = aws_lambda_function.lambda_transform.function_name
   principal     = "s3.amazonaws.com"
   source_arn    = aws_s3_bucket.s3_ingestion.arn
+  depends_on    = [aws_s3_bucket.s3_ingestion]
 }
 
 resource "aws_s3_object" "lambda-transform" {
