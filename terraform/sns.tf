@@ -7,4 +7,3 @@ resource "aws_sns_topic_subscription" "sre_email_subscription" {
   protocol  = "email"
   endpoint  = "irina.redactor@gmail.com"
 }
-# delete after
