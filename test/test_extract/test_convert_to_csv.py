@@ -10,9 +10,9 @@ def test_convert_to_csv_basic_functionality():
         {"temperature": 25, "humidity": 60},
     ]
     expected_csv = (
-        "temperature,humidity\r\n"
-        "20,50\r\n"
-        "25,60\r\n"
+        "humidity,rain.3h,snow.3h,temperature\r\n"
+        "50,0,0,20\r\n"
+        "60,0,0,25\r\n"
     )
 
     result = convert_to_csv(sample_data)
