@@ -53,6 +53,8 @@ def convert_csv_to_dataframe(csv_data):
         return None
 
 def update_dataframe(df):
+    # Keep weather descriptions
+    # Temperature
     pass
 
 def calculate_time_increase():
