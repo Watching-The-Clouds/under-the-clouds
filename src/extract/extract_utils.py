@@ -88,17 +88,25 @@ def convert_to_csv(flattened_data):
         .csv file
     """
 
-    output = io.StringIO()
-    writer = csv.writer(output)
+    additional_keys = ["rain.3h", "snow.3h"]
 
-    writer.writerow(flattened_data[0].keys())
+    all_keys = set()
+    for dict in flattened_data:
+        all_keys.update(dict.keys())
+
+    all_keys.update(set(additional_keys))
+
+    all_keys = sorted(all_keys)
+    print(all_keys)
+    output = io.StringIO()
+    writer = csv.DictWriter(output, fieldnames=all_keys)
+    writer.writeheader()
 
     for dict in flattened_data:
-        writer.writerow(dict.values())
+        writer.writerow({key: dict.get(key, 0) for key in all_keys})
 
-    converted_data = output.getvalue()
+    converted_data = output.getvalue()  
     output.close()
-
     return converted_data
 
 def create_directory_structure_and_file_name():
