@@ -2,6 +2,8 @@ import boto3
 import pandas as pd
 import io
 import os
+import csv
+from pprint import pprint
 
 data_bucket = os.environ.get("INGESTION_BUCKET")
 processed_data_bucket = os.environ.get("PROCESSED_BUCKET") # Not defined yet - what name?
@@ -52,10 +54,56 @@ def convert_csv_to_dataframe(csv_data):
         print(f"Error converting CSV data to DataFrame: {e}")
         return None
 
-def update_dataframe(df):
-    # Keep weather descriptions
-    # Temperature
-    pass
+def update_dataframe():
+    """
+    Write docstring :)
+    """
+
+    # For testing using sample_csv.csv
+    with open("sample_csv.csv", "r") as f:
+        csv_data = f.read()
+
+    df = convert_csv_to_dataframe(csv_data)
+
+    new_df=df.rename(columns={
+        "name": "city",
+        "dt_txt": "date_time",
+        "main.temp_max": "temp_max",
+        "main.temp_min": "temp_min",
+        "main.humidity": "humidity",
+        "weather.0.description": "weather_description",
+        "wind.deg": "wind_direction",
+        "wind.speed": "wind_speed"
+    })
+
+    # TODO: handle wind_direction by translating degrees into cardinal directions (N, NE, E, SE, S, SW, W, NW)
+    directions = { (348.75, 360): "North", (0, 11.25): "North", (11.25, 33.75): "North-Northeast", (33.75, 56.25): "Northeast", (56.25, 78.75): "East-Northeast", (78.75, 101.25): "East", (101.25, 123.75): "East-Southeast", (123.75, 146.25): "Southeast", (146.25, 168.75): "South-Southeast", (168.75, 191.25): "South", (191.25, 213.75): "South-Southwest", (213.75, 236.25): "Southwest", (236.25, 258.75): "West-Southwest", (258.75, 281.25): "West", (281.25, 303.75): "West-Northwest", (303.75, 326.25): "Northwest", (326.25, 348.75): "North-Northwest" }
+
+    df["rain.3h"] = df.get("rain.3h", 0)
+    df["snow.3h"] = df.get("snow.3h", 0)
+    new_df["precipitation"] = df["rain.3h"] + df["snow.3h"]
+
+    basic_endpoint = new_df[[
+            "city", 
+            "date_time", 
+            "temp_max", 
+            "temp_min", 
+            "humidity", 
+            "weather_description", 
+            "precipitation", 
+            "wind_direction", 
+            "wind_speed", 
+            "visibility"
+        ]]
+    
+    # print(basic_endpoint)
+    # basic_endpoint.to_csv('proper_test_output.csv')        
+
+    # time_df = calculate_time_increase("param")
+    # cost_df = calculate_cost_increase("param")
+    # combine all 3 dataframes (basic_endpoint, time_df, cost_df)
+
+    return basic_endpoint
 
 def calculate_time_increase():
     # Still 'per mile' and then multuiply by user input as required for final output
@@ -80,3 +128,5 @@ def store_in_s3(s3_client, parquet_file, bucket_name, file_name):
     """
     
     s3_client.put_object(Body=parquet_file, Bucket=bucket_name, Key=file_name)
+
+update_dataframe()
