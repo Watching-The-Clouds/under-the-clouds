@@ -1,0 +1,5 @@
+,city,date_time,temp_max,temp_min,humidity,weather_description,precipitation,wind_direction,wind_speed,visibility
+0,Zocca,2022-08-30 15:00:00,297.87,296.76,69,light rain,0.26,349,0.62,10000
+1,Zocca,2022-08-30 18:00:00,295.45,292.84,71,light rain,0.57,157,1.97,10000
+2,Zocca,2022-08-30 21:00:00,292.46,290.31,80,light rain,0.49,210,2.66,10000
+3,Zocca,2022-09-04 12:00:00,294.93,294.93,64,overcast clouds,0.0,17,1.14,10000
