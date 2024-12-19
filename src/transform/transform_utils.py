@@ -70,25 +70,26 @@ def update_dataframe():
         "dt_txt": "date_time",
         "main.temp_max": "temp_max",
         "main.temp_min": "temp_min",
-        "main.humidity": "humidity",
+        "main.feels_like": "feels_like",
         "weather.0.description": "weather_description",
         "wind.deg": "wind_direction",
         "wind.speed": "wind_speed"
     })
 
-    # TODO: handle wind_direction by translating degrees into cardinal directions (N, NE, E, SE, S, SW, W, NW)
-    directions = { (348.75, 360): "North", (0, 11.25): "North", (11.25, 33.75): "North-Northeast", (33.75, 56.25): "Northeast", (56.25, 78.75): "East-Northeast", (78.75, 101.25): "East", (101.25, 123.75): "East-Southeast", (123.75, 146.25): "Southeast", (146.25, 168.75): "South-Southeast", (168.75, 191.25): "South", (191.25, 213.75): "South-Southwest", (213.75, 236.25): "Southwest", (236.25, 258.75): "West-Southwest", (258.75, 281.25): "West", (281.25, 303.75): "West-Northwest", (303.75, 326.25): "Northwest", (326.25, 348.75): "North-Northwest" }
-
     df["rain.3h"] = df.get("rain.3h", 0)
     df["snow.3h"] = df.get("snow.3h", 0)
     new_df["precipitation"] = df["rain.3h"] + df["snow.3h"]
+
+    wind_column = new_df["wind_direction"]
+    new_wind_column = wind_column.apply(update_wind_direction)
+    new_df["wind_direction"] = new_wind_column
 
     basic_endpoint = new_df[[
             "city", 
             "date_time", 
             "temp_max", 
             "temp_min", 
-            "humidity", 
+            "feels_like", 
             "weather_description", 
             "precipitation", 
             "wind_direction", 
@@ -96,7 +97,6 @@ def update_dataframe():
             "visibility"
         ]]
     
-    # print(basic_endpoint)
     # basic_endpoint.to_csv('proper_test_output.csv')        
 
     # time_df = calculate_time_increase("param")
@@ -128,5 +128,35 @@ def store_in_s3(s3_client, parquet_file, bucket_name, file_name):
     """
     
     s3_client.put_object(Body=parquet_file, Bucket=bucket_name, Key=file_name)
+
+def update_wind_direction(degrees):
+
+    # Mapping table as a dictionary
+    directions = {
+        (348.75, 360): "North", 
+        (0, 11.25): "North",
+        (11.25, 33.75): "North-Northeast",
+        (33.75, 56.25): "Northeast",
+        (56.25, 78.75): "East-Northeast",
+        (78.75, 101.25): "East",
+        (101.25, 123.75): "East-Southeast",
+        (123.75, 146.25): "Southeast",
+        (146.25, 168.75): "South-Southeast",
+        (168.75, 191.25): "South",
+        (191.25, 213.75): "South-Southwest",
+        (213.75, 236.25): "Southwest",
+        (236.25, 258.75): "West-Southwest",
+        (258.75, 281.25): "West",
+        (281.25, 303.75): "West-Northwest",
+        (303.75, 326.25): "Northwest",
+        (326.25, 348.75): "North-Northwest"
+    }
+    
+    # Match the degree to the correct direction
+    for (start, end), direction in directions.items():
+        if start <= degrees < end:
+            return direction
+    
+    return "Invalid"  # Fallback for unexpected inputs
 
 update_dataframe()
