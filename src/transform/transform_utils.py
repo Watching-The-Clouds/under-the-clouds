@@ -58,10 +58,8 @@ def update_dataframe():
     """
     Write docstring :)
     """
-
-    # For testing using sample_csv.csv
-    with open("sample_csv.csv", "r") as f:
-        csv_data = f.read()
+    with open("sample_csv.csv", "r") as file:
+        csv_data = file.read()
 
     df = convert_csv_to_dataframe(csv_data)
 
@@ -72,19 +70,23 @@ def update_dataframe():
         "main.temp_min": "temp_min",
         "main.feels_like": "feels_like",
         "weather.0.description": "weather_description",
+        "weather.0.id": "weather_id",
         "wind.deg": "wind_direction",
         "wind.speed": "wind_speed"
     })
 
+    # Combines rain.3h and snow.3h into a single 'precipitation' column
     df["rain.3h"] = df.get("rain.3h", 0)
     df["snow.3h"] = df.get("snow.3h", 0)
     new_df["precipitation"] = df["rain.3h"] + df["snow.3h"]
 
     # https://saturncloud.io/blog/pandas-how-to-change-all-the-values-of-a-column/
+    # Update wind_direction from degrees --> cardinal directions
     wind_column = new_df["wind_direction"]
     new_wind_column = wind_column.apply(update_wind_direction)
     new_df["wind_direction"] = new_wind_column
 
+    # Create new column 'visibility_description' based on the visibility column
     new_df["visibility_description"] = new_df["visibility"].apply(update_visibility_description)
 
     basic_endpoint = new_df[[
@@ -93,29 +95,108 @@ def update_dataframe():
             "temp_max", 
             "temp_min", 
             "feels_like", 
-            "weather_description", 
+            "weather_description",
+            "weather_id",
             "precipitation", 
             "wind_direction", 
             "wind_speed", 
             "visibility",
             "visibility_description"
         ]]
+    updated_basic_endpoint = calculate_time_increase(basic_endpoint)
+    ready_basic_endpoint = calculate_fuel_usage_increase(updated_basic_endpoint)
+    # Uncomment this, invoke update_dataframe to see the basic_endpoint output
+    # basic_endpoint.to_csv('proper_test_output.csv')        
+
+    return ready_basic_endpoint.to_csv()
+
+def calculate_time_increase(basic_endpoint):
+    # Still 'per mile' and then multuiply by user input as required for final output
     
-    basic_endpoint.to_csv('proper_test_output.csv')        
+    base_speed_mph = 20 # miles per hour
+    base_speed_mps = 20/(60*60) # miles per second
+    base_time_spm = 1/base_speed_mps # seconds per mile
+    fuel_efficiency = 8.5 # litres per 100 km
 
-    # time_df = calculate_time_increase("param")
-    # cost_df = calculate_cost_increase("param")
-    # combine all 3 dataframes (basic_endpoint, time_df, cost_df)
+    # Match weather_id from dataframe to weather descriptor in this dict:
+    weather_id_dict = {
+        "light_rain":[200,201,230,231,232,300,301,302,310,311,500,501,520],
+        "heavy_rain":[202,312,313,314,321,502,503,504,511,521,522,531],
+        "snow":[600,601,602,611,612,613,615,616,620,621,622],
+        "clear":[800,801,802,803,804,701,711,721,731,741,751,761,762,771,781]
+    }
+    
+    def get_weather_impact(weather_id):
+        for impact, id_list in weather_id_dict.items():
+            if weather_id in id_list:
+                return impact
+        return "Unknown weather code" 
+    
+    # Add debug print to see the dataframe before changes
+    print("Columns before:", basic_endpoint.columns.tolist())
+    
+    basic_endpoint["weather_impact_code"] = basic_endpoint["weather_id"].apply(get_weather_impact)
+    print("Weather impact codes:", basic_endpoint["weather_impact_code"].unique())
+    
+    # Use weather description from above dict to match with (low, high) % impact on speed
+    # For 'low_visibility'
+    weather_impact = {
+        "clear": (0,0),
+        "light_rain":(3,13),
+        "heavy_rain":(3,16),
+        "snow":(5,40),
+        "low_visibility":(10,12) # Based on visibility, NOT weather_description
+    }
 
+    # Create new columns for speed coefficients
+    def get_speed_coefficients(row):
+        # Get the impact values from weather_impact dictionary
+        impact_values = weather_impact.get(row["weather_impact_code"], (0, 0))
+        
+        # Add visibility impact if visibility is low
+        if row["visibility_description"] == "low":
+            vis_impact = weather_impact["low_visibility"]
+            # Combine the weather and visibility impacts
+            low_impact = impact_values[0] + vis_impact[0]
+            high_impact = impact_values[1] + vis_impact[1]
+        else:
+            low_impact = impact_values[0]
+            high_impact = impact_values[1]
+            
+        # Convert percentage to coefficient (e.g., 10% becomes 0.9)
+        low_coef = 1 - (low_impact / 100)
+        high_coef = 1 - (high_impact / 100)
+        
+        return pd.Series([low_coef, high_coef])
+
+    # Apply the function to create new columns
+    basic_endpoint[["speed_coefficient_low", "speed_coefficient_high"]] = basic_endpoint.apply(get_speed_coefficients, axis=1)
+    
+    # Add debug print to verify new columns
+    print("Columns after:", basic_endpoint.columns.tolist())
+    print("\nSample of coefficients:")
+    print(basic_endpoint[["weather_impact_code", "visibility_description", "speed_coefficient_low", "speed_coefficient_high"]].head())
+    
     return basic_endpoint
 
-def calculate_time_increase():
+def calculate_fuel_usage_increase(basic_endpoint):
     # Still 'per mile' and then multuiply by user input as required for final output
-    pass
+    weather_impact = {
+        "clear": (0,0),
+        "light_rain":(10,14.5),
+        "heavy_rain":(10,14.5),
+        "snow":(7,35)
+    }
 
-def calculate_cost_increase():
-    # Still 'per mile' and then multuiply by user input as required for final output
-    pass
+    def get_fuel_usage_coefficients(row):
+        impact_values = weather_impact.get(row["weather_impact_code"], (0, 0))
+        low_coef = round(1 + (impact_values[0] / 100), 2)
+        high_coef = round(1 + (impact_values[1] / 100), 2)
+        return pd.Series([low_coef, high_coef])
+
+    basic_endpoint[["fuel_usage_coefficient_low", "fuel_usage_coefficient_high"]] = basic_endpoint.apply(get_fuel_usage_coefficients, axis=1)
+
+    return basic_endpoint
 
 def convert_to_parquet():
     pass
@@ -168,12 +249,16 @@ def update_visibility_description(visibility):
     visibility_categories = {
         (10000, 10001):"high",
         (5000,9999):"moderate",
-        (1000,4999):"low",
-        (0,999):"very low"
+        (0,4999):"low"
         }
     
     for (start, end), category in visibility_categories.items():
         if start <= visibility < end:
             return category 
-        
-update_dataframe()
+
+
+y = update_dataframe()
+with open("test_output.csv", "w") as file:
+    file.write(y)
+
+
