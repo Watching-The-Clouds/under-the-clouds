@@ -80,9 +80,12 @@ def update_dataframe():
     df["snow.3h"] = df.get("snow.3h", 0)
     new_df["precipitation"] = df["rain.3h"] + df["snow.3h"]
 
+    # https://saturncloud.io/blog/pandas-how-to-change-all-the-values-of-a-column/
     wind_column = new_df["wind_direction"]
     new_wind_column = wind_column.apply(update_wind_direction)
     new_df["wind_direction"] = new_wind_column
+
+    new_df["visibility_description"] = new_df["visibility"].apply(update_visibility_description)
 
     basic_endpoint = new_df[[
             "city", 
@@ -94,10 +97,11 @@ def update_dataframe():
             "precipitation", 
             "wind_direction", 
             "wind_speed", 
-            "visibility"
+            "visibility",
+            "visibility_description"
         ]]
     
-    # basic_endpoint.to_csv('proper_test_output.csv')        
+    basic_endpoint.to_csv('proper_test_output.csv')        
 
     # time_df = calculate_time_increase("param")
     # cost_df = calculate_cost_increase("param")
@@ -159,4 +163,17 @@ def update_wind_direction(degrees):
     
     return "Invalid"  # Fallback for unexpected inputs
 
+def update_visibility_description(visibility):
+    
+    visibility_categories = {
+        (10000, 10001):"high",
+        (5000,9999):"moderate",
+        (1000,4999):"low",
+        (0,999):"very low"
+        }
+    
+    for (start, end), category in visibility_categories.items():
+        if start <= visibility < end:
+            return category 
+        
 update_dataframe()
