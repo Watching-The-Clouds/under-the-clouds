@@ -1,4 +1,5 @@
-from transform_utils import create_s3_client, fetch_csv_from_s3, convert_csv_to_dataframe, update_dataframe
+from transform_utils import create_s3_client, fetch_csv_from_s3, convert_csv_to_dataframe, update_dataframe, convert_to_parquet, store_in_s3
+import urllib.parse
 
 def lambda_handler(event, context):
     """
@@ -21,12 +22,20 @@ def lambda_handler(event, context):
             string declaring success or failure
     """
 
-    create_s3_client()
+    ingested_bucket = "watching-the-clouds-ingestion"
+    processed_bucket = "watching-the-clouds-processing"
+    file_directory = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
 
-    fetch_csv_from_s3()
+    s3_client = create_s3_client()
 
-    convert_csv_to_dataframe()
+    csv_data = fetch_csv_from_s3(s3_client,ingested_bucket,file_directory)
 
-    update_dataframe()
+    df = convert_csv_to_dataframe(csv_data)
+
+    ready_basic_endpoint = update_dataframe(df)
+
+    parquet_body = convert_to_parquet(ready_basic_endpoint)
+
+    store_in_s3(s3_client,parquet_body,processed_bucket,file_directory)
 
     return "Success!"
