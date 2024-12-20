@@ -1,12 +1,6 @@
 import boto3
 import pandas as pd
 import io
-import os
-import csv
-from pprint import pprint
-
-data_bucket = os.environ.get("INGESTION_BUCKET")
-processed_data_bucket = os.environ.get("PROCESSED_BUCKET") # Not defined yet - what name?
 
 def create_s3_client():
     """
@@ -17,7 +11,7 @@ def create_s3_client():
     """
     return boto3.client("s3")
 
-def fetch_csv_from_s3(s3_client, data_bucket, key):
+def fetch_csv_from_s3(s3_client, ingested_bucket, file_directory):
     """Fetches data in .csv format from ingested S3 bucket.
     
     Parameters:
@@ -28,8 +22,9 @@ def fetch_csv_from_s3(s3_client, data_bucket, key):
     Returns:
         a string containing .csv data    
     """
+
     try:
-        obj = s3_client.get_object(Bucket=data_bucket, Key=key)
+        obj = s3_client.get_object(Bucket=ingested_bucket, Key=file_directory)
         csv_data = obj['Body'].read().decode('utf-8')
         return csv_data
     
@@ -54,14 +49,10 @@ def convert_csv_to_dataframe(csv_data):
         print(f"Error converting CSV data to DataFrame: {e}")
         return None
 
-def update_dataframe():
+def update_dataframe(df):
     """
     Write docstring :)
     """
-    with open("sample_csv.csv", "r") as file:
-        csv_data = file.read()
-
-    df = convert_csv_to_dataframe(csv_data)
 
     new_df=df.rename(columns={
         "name": "city",
@@ -103,12 +94,16 @@ def update_dataframe():
             "visibility",
             "visibility_description"
         ]]
+    # Adds 'time_increase' coefficients etc to the endpoint dataframe
     updated_basic_endpoint = calculate_time_increase(basic_endpoint)
-    ready_basic_endpoint = calculate_fuel_usage_increase(updated_basic_endpoint)
-    # Uncomment this, invoke update_dataframe to see the basic_endpoint output
-    # basic_endpoint.to_csv('proper_test_output.csv')        
 
-    return ready_basic_endpoint.to_csv()
+    # Adds 'cost_increase' coefficients etc to the endpoint dataframe
+    ready_basic_endpoint = calculate_fuel_usage_increase(updated_basic_endpoint)
+
+    # Uncomment this, invoke update_dataframe to see the basic_endpoint output
+    # basic_endpoint.to_csv('proper_test_output.csv')       
+
+    return ready_basic_endpoint
 
 def calculate_time_increase(basic_endpoint):
     # Still 'per mile' and then multuiply by user input as required for final output
@@ -198,10 +193,20 @@ def calculate_fuel_usage_increase(basic_endpoint):
 
     return basic_endpoint
 
-def convert_to_parquet():
-    pass
+def convert_to_parquet(ready_basic_endpoint):
 
-def store_in_s3(s3_client, parquet_file, bucket_name, file_name):
+    # Use file name from lambda_handler event to create directory for new parquet files in processed bucket
+
+    # output_path = f"{transform_function.__name__}/{year}/{month}/{day}/{file_name[:-4]}.parquet"
+
+    parquet_buffer = io.BytesIO()
+    ready_basic_endpoint.to_parquet(parquet_buffer, index=False)
+
+    parquet_body = parquet_buffer.getvalue()
+
+    return parquet_body
+
+def store_in_s3(s3_client, parquet_body, processed_bucket, file_directory):
     """
     Uploads parquet file to a named AWS S3 bucket.
 
@@ -212,7 +217,7 @@ def store_in_s3(s3_client, parquet_file, bucket_name, file_name):
         file_name (str): S3 file directory and file name
     """
     
-    s3_client.put_object(Body=parquet_file, Bucket=bucket_name, Key=file_name)
+    s3_client.put_object(Body=parquet_body, Bucket=processed_bucket, Key=file_directory)
 
 def update_wind_direction(degrees):
 
@@ -254,11 +259,4 @@ def update_visibility_description(visibility):
     
     for (start, end), category in visibility_categories.items():
         if start <= visibility < end:
-            return category 
-
-
-y = update_dataframe()
-with open("test_output.csv", "w") as file:
-    file.write(y)
-
-
+            return category
