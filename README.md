@@ -66,7 +66,7 @@ Delivery companies face challenges when adverse weather conditions affect delive
    ```  
 2. **Install dependencies:**  
    ```bash  
-   pip install -r requirements.txt  
+   make requirements
    ```  
 3. **Deploy the AWS infrastructure:**  
    - Use the provided Terraform script.  
