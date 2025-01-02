@@ -15,6 +15,4 @@ def test_convert_csv_to_dataframe():
 
     result = convert_csv_to_dataframe(test_csv_content)
 
-    # assert result == expected_output
     pd.testing.assert_frame_equal(result, expected_output)
-
