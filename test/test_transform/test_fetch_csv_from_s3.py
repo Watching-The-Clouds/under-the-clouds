@@ -21,4 +21,3 @@ def test_fetch_csv_from_s3():
     result = fetch_csv_from_s3(test_s3_client, test_bucket,test_file_directory)
 
     assert result == test_csv_content
-
