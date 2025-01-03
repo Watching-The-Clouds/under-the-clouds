@@ -1,5 +1,5 @@
 import pytest
-from src.transform.transform_utils import get_weather_impact
+from transform_utils import get_weather_impact
 
 def test_light_rain_codes():
     light_rain_codes = [200, 201, 230, 231, 232, 300, 301, 302, 310, 311, 500, 501, 520]

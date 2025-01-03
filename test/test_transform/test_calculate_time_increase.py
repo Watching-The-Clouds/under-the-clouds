@@ -1,6 +1,6 @@
 import pytest
 import pandas as pd
-from src.transform.transform_utils import calculate_time_increase
+from transform_utils import calculate_time_increase
 
 def test_clear_weather_high_visibility():
     df = pd.DataFrame({
