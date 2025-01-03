@@ -57,7 +57,7 @@ def test_snow_high_visibility():
 
 def test_unknown_weather_code():
     df = pd.DataFrame({
-        'weather_id': [999],  
+        'weather_id': [999],
         'visibility': [10000],
         'visibility_description': ['high']
     })
@@ -70,7 +70,7 @@ def test_unknown_weather_code():
 
 def test_multiple_weather_conditions():
     df = pd.DataFrame({
-        'weather_id': [800, 500, 502, 601], 
+        'weather_id': [800, 500, 502, 601],
         'visibility': [10000, 7000, 3000, 10000],
         'visibility_description': ['high', 'moderate', 'low', 'high']
     })

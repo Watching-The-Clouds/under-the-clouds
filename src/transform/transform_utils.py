@@ -101,48 +101,37 @@ def update_dataframe(df):
  
     return ready_basic_endpoint
 
-def calculate_time_increase(basic_endpoint):
-    """
-    Matches OpenWeatherMap API weather codes to general weather descriptions (eg light_rain, snow ...)
-    Calculates the % impact on base_speed based on the weather description (eg light_rain reduces speed by 3-13%)
-    Data for calculations coming from US Dept. for Transportation Federal Highway Administration
-    
-    Parameters:
-        a Pandas dataframe
 
-    Returns:
-        an updated Pandas dataframe
-    """
-    
-    base_speed_mph = 20 # miles per hour
-    base_speed_mps = 20/(60*60) # miles per second
-    base_time_spm = 1/base_speed_mps # seconds per mile
-    fuel_efficiency = 8.5 # litres per 100 km
+def get_weather_impact(weather_id):
+        """
+        Matches OpenWeatherMap API weather codes to general weather descriptions (eg light_rain, snow ...)
+        """
 
-    weather_id_dict = {
+        weather_id_dict = {
         "light_rain":[200,201,230,231,232,300,301,302,310,311,500,501,520],
         "heavy_rain":[202,312,313,314,321,502,503,504,511,521,522,531],
         "snow":[600,601,602,611,612,613,615,616,620,621,622],
         "clear":[800,801,802,803,804,701,711,721,731,741,751,761,762,771,781]
-    }
-    
-    def get_weather_impact(weather_id):
-        for impact, id_list in weather_id_dict.items():
+        }
+        for description, id_list in weather_id_dict.items():
             if weather_id in id_list:
-                return impact
+                return description
         return "Unknown weather code"
-    
-    basic_endpoint["weather_impact_code"] = basic_endpoint["weather_id"].apply(get_weather_impact)
-    
-    weather_impact = {
+
+
+def get_speed_coefficients(row):
+        """
+        Calculates the % impact on base_speed based on the weather description (eg light_rain reduces speed by 3-13%)
+        Data for calculations coming from US Dept. for Transportation Federal Highway Administration
+        """
+
+        weather_impact = {
         "clear": (0,0),
         "light_rain":(3,13),
         "heavy_rain":(3,16),
         "snow":(5,40),
         "low_visibility":(10,12)
-    }
-
-    def get_speed_coefficients(row):
+        }
         impact_values = weather_impact.get(row["weather_impact_code"], (0, 0))
         
         if row["visibility_description"] == "low":
@@ -158,15 +147,50 @@ def calculate_time_increase(basic_endpoint):
         
         return pd.Series([low_coef, high_coef])
 
-    basic_endpoint[["speed_coefficient_low", "speed_coefficient_high"]] = basic_endpoint.apply(get_speed_coefficients, axis=1)
+
+def calculate_time_increase(basic_endpoint):
+    """
+    Applies speed and fuel efficiency coefficients to dataframe. The coefficients are calculated 
+    in get_speed_coefficients() and get_weather_impact(). Later, the coefficients are applied 
+    to the user-provided input to calculate the time and fuel usage.
     
-    return basic_endpoint
+    Parameters:
+        a Pandas dataframe
+
+    Returns:
+        an updated Pandas dataframe
+    """
+    
+    base_speed_mph = 20 # miles per hour
+    base_speed_mps = 20/(60*60) # miles per second
+    base_time_spm = 1/base_speed_mps # seconds per mile
+    fuel_efficiency = 8.5 # litres per 100 km
+
+    df = basic_endpoint.copy()
+    df["weather_impact_code"] = df["weather_id"].apply(get_weather_impact)
+    df[["speed_coefficient_low", "speed_coefficient_high"]] = df.apply(get_speed_coefficients, axis=1)
+    
+    return df
+
+
+def get_fuel_usage_coefficients(row):
+        weather_impact = {
+        "clear": (0,0),
+        "light_rain":(10,14.5),
+        "heavy_rain":(10,14.5),
+        "snow":(7,35)
+        }
+        impact_values = weather_impact.get(row["weather_impact_code"], (0, 0))
+        low_coef = round(1 + (impact_values[0] / 100), 2)
+        high_coef = round(1 + (impact_values[1] / 100), 2)
+        return pd.Series([low_coef, high_coef])
+
 
 def calculate_fuel_usage_increase(basic_endpoint):
     """
-    Matches OpenWeatherMap API weather codes to general weather descriptions (eg light_rain, snow ...)
-    Calculates the % impact on fuel efficiency based on the weather description (eg light_rain reduces speed by 3-13%)
-    Data for calculations coming from US Dept of Energy, Office of Energy Efficiency and Renewable Energy and Natural Resources Canada
+    Adds fuel usage coefficients to dataframe. The coefficients are calculated 
+    in get_fuel_usage_coefficients(). Later, the coefficients 
+    are applied to the user-provided input to calculate the fuel usage.
     
     Parameters:
         a Pandas dataframe
@@ -175,22 +199,10 @@ def calculate_fuel_usage_increase(basic_endpoint):
         an updated Pandas dataframe
     """
 
-    weather_impact = {
-        "clear": (0,0),
-        "light_rain":(10,14.5),
-        "heavy_rain":(10,14.5),
-        "snow":(7,35)
-    }
+    df = basic_endpoint.copy()
+    df[["fuel_usage_coefficient_low", "fuel_usage_coefficient_high"]] = df.apply(get_fuel_usage_coefficients, axis=1)
 
-    def get_fuel_usage_coefficients(row):
-        impact_values = weather_impact.get(row["weather_impact_code"], (0, 0))
-        low_coef = round(1 + (impact_values[0] / 100), 2)
-        high_coef = round(1 + (impact_values[1] / 100), 2)
-        return pd.Series([low_coef, high_coef])
-
-    basic_endpoint[["fuel_usage_coefficient_low", "fuel_usage_coefficient_high"]] = basic_endpoint.apply(get_fuel_usage_coefficients, axis=1)
-
-    return basic_endpoint
+    return df
 
 def convert_to_parquet(ready_basic_endpoint):
     """
