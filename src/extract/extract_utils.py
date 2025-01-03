@@ -6,6 +6,7 @@ import os
 import csv
 import io
 
+
 def make_api_get_request():
     """
     Makes API get request to OpenWeatherMap API.
@@ -14,17 +15,20 @@ def make_api_get_request():
         Python dictionary containing forecast data for 5 days in 3 hour intervals
     """
 
-    api_key = os.environ.get('API_KEY')
+    api_key = os.environ.get("API_KEY")
     endpoint_url = "api.openweathermap.org/data/2.5/forecast"
     location = "London"
 
-    response = requests.get(f'https://{endpoint_url}?q={location}&units=metric&appid={api_key}')
+    response = requests.get(
+        f"https://{endpoint_url}?q={location}&units=metric&appid={api_key}"
+    )
 
     data = response.json()
 
     return data
 
-def flatten(x, name=''):
+
+def flatten(x, name=""):
     """
     Uses recursion to flatten object to create key:value pairs that can later be used for column titles.
 
@@ -35,23 +39,24 @@ def flatten(x, name=''):
     Returns:
         list of flattened dictionaries
     """
-    
+
     flattened_list = []
-    
+
     if isinstance(x, dict):  # Process dictionaries
         for key, value in x.items():
             new_key = f"{name}.{key}" if name else key
             flattened_list.extend(flatten(value, new_key).items())
-    
+
     elif isinstance(x, list):  # Process lists
         for i, value in enumerate(x):
             new_key = f"{name}.{i}" if name else str(i)
             flattened_list.extend(flatten(value, new_key).items())
-    
-    else:  
+
+    else:
         flattened_list.append((name, x))
-    
+
     return dict(flattened_list)
+
 
 def format_data(data):
     """
@@ -71,11 +76,12 @@ def format_data(data):
         city_dict = flatten(data["city"])
         forecast_dict = flatten(x)
 
-        flatten_dict = city_dict|forecast_dict
+        flatten_dict = city_dict | forecast_dict
 
-        flattened_data.append(flatten_dict)    
+        flattened_data.append(flatten_dict)
 
     return flattened_data
+
 
 def convert_to_csv(flattened_data):
     """
@@ -105,9 +111,10 @@ def convert_to_csv(flattened_data):
     for dict in flattened_data:
         writer.writerow({key: dict.get(key, 0) for key in all_keys})
 
-    converted_data = output.getvalue()  
+    converted_data = output.getvalue()
     output.close()
     return converted_data
+
 
 def create_directory_structure_and_file_name():
     """
@@ -125,8 +132,9 @@ def create_directory_structure_and_file_name():
     time = date_time_now[11:]
 
     file_name = f"GB/London/{year}/{month}/{day}/{time}.csv"
-    
+
     return file_name
+
 
 def create_s3_client():
     """
@@ -138,6 +146,7 @@ def create_s3_client():
 
     return boto3.client("s3")
 
+
 def store_in_s3(s3_client, converted_data, bucket_name, file_name):
     """
     Uploads .csv file to a named AWS S3 bucket.
@@ -148,5 +157,5 @@ def store_in_s3(s3_client, converted_data, bucket_name, file_name):
         bucket_name (str): S3 bucket name
         file_name (str): S3 file directory and file name
     """
-    
+
     s3_client.put_object(Body=converted_data, Bucket=bucket_name, Key=file_name)
