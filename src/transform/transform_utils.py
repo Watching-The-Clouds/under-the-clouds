@@ -107,7 +107,7 @@ def get_direction(degrees):
 
     if degrees == 360:
         degrees = 0
-        
+
     directions = {
         (348.75, 360): "North",
         (0, 11.25): "North",
@@ -146,6 +146,7 @@ def update_wind_direction(df):
     Returns:
         an updated Pandas dataframe
     """
+    
     df_copy = df.copy()
     df_copy["wind_direction"] = df_copy["wind_direction"].apply(get_direction)
 
