@@ -48,7 +48,7 @@ jobs:
     name: deploy-lambda
     runs-on: ubuntu-latest
     needs: run-tests
-    if: github.ref == 'refs/heads/main'  # Only runs for the main branch
+    # if: github.ref == 'refs/heads/main'  # Only runs for the main branch
     environment: development
     permissions:
       contents: read
