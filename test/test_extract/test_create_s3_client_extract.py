@@ -5,6 +5,7 @@ from botocore.exceptions import NoCredentialsError
 import pytest
 import boto3
 
+
 @mock_aws
 def test_create_s3_client_success():
     s3_client = create_s3_client()
@@ -19,9 +20,10 @@ def test_create_s3_no_credentials(mock_boto_client):
     with pytest.raises(NoCredentialsError):
         create_s3_client()
 
+
 @patch("extract_utils.boto3.client")
 def test_create_s3_client_calls_boto3_with_s3(mock_boto_client):
-    mock_s3_client = mock_boto_client.return_value 
+    mock_s3_client = mock_boto_client.return_value
 
     s3_client = create_s3_client()
 
