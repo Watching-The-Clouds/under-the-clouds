@@ -333,4 +333,6 @@ def store_in_s3(s3_client, parquet_body, processed_bucket, file_directory):
         file_directory (str): S3 file directory and file name
     """
 
+    file_directory = file_directory.rsplit('.', 1)[0] + '.parquet'
+
     s3_client.put_object(Body=parquet_body, Bucket=processed_bucket, Key=file_directory)
