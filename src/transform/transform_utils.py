@@ -104,6 +104,10 @@ def get_direction(degrees):
     """
     Helper function to map degrees to cardinal directions.
     """
+
+    if degrees == 360:
+        degrees = 0
+        
     directions = {
         (348.75, 360): "North",
         (0, 11.25): "North",
