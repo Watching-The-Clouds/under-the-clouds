@@ -324,6 +324,7 @@ def convert_to_parquet(ready_basic_endpoint):
 
 def store_in_s3(s3_client, parquet_body, processed_bucket, file_directory):
     """
+    Updates directory from .csv to .parquet
     Uploads binary of parquet file to a named AWS S3 bucket in .parquet format
 
     Parameters:
