@@ -186,4 +186,62 @@ def test_calculate_time_increase_failure(mock_calculate_time_increase, caplog):
     assert response == "Failed to calculate time increase"
     assert "Failed to calculate time increase: Time increase calculation error" in caplog.text
 
+@patch("transform.calculate_fuel_usage_increase", side_effect=Exception("Fuel usage calculation error"))
+def test_calculate_fuel_usage_increase_failure(mock_calculate_fuel_usage_increase, caplog):
 
+    event = {"Records": [{"s3": {"object": {"key": "test_file.csv"}}}]}
+
+    with patch("transform.fetch_csv_from_s3", return_value="mock_csv_data"), \
+         patch("transform.convert_csv_to_dataframe", return_value="mock_dataframe"), \
+         patch("transform.generate_new_column", return_value="mock_dataframe_with_precip"), \
+         patch("transform.drop_and_rename_columns", return_value="mock_dataframe_dropped"), \
+         patch("transform.update_wind_direction", return_value="mock_dataframe_wind"), \
+         patch("transform.update_visibility", return_value="mock_dataframe_visibility"), \
+         patch("transform.calculate_time_increase", return_value="mock_dataframe_time_increase"):
+        
+        with caplog.at_level(logging.ERROR):
+            response = lambda_handler(event, {})
+
+    assert response == "Failed to calculate fuel usage"
+    assert "Failed to calculate fuel usage: Fuel usage calculation error" in caplog.text
+
+@patch("transform.convert_to_parquet", side_effect=Exception("Parquet conversion error"))
+def test_convert_to_parquet_failure(mock_convert_to_parquet, caplog):
+
+    event = {"Records": [{"s3": {"object": {"key": "test_file.csv"}}}]}
+
+    with patch("transform.fetch_csv_from_s3", return_value="mock_csv_data"), \
+         patch("transform.convert_csv_to_dataframe", return_value="mock_dataframe"), \
+         patch("transform.generate_new_column", return_value="mock_dataframe_with_precip"), \
+         patch("transform.drop_and_rename_columns", return_value="mock_dataframe_dropped"), \
+         patch("transform.update_wind_direction", return_value="mock_dataframe_wind"), \
+         patch("transform.update_visibility", return_value="mock_dataframe_visibility"), \
+         patch("transform.calculate_time_increase", return_value="mock_dataframe_time_increase"), \
+         patch("transform.calculate_fuel_usage_increase", return_value="mock_dataframe_fuel_usage_increase"):
+        
+        with caplog.at_level(logging.ERROR):
+            response = lambda_handler(event, {})
+
+    assert response == "Failed to convert to parquet format"
+    assert "Failed to convert to parquet format: Parquet conversion error" in caplog.text
+
+@patch("transform.store_in_s3", side_effect=Exception("S3 storage error"))
+def test_store_in_s3_failure(mock_store_in_s3, caplog):
+
+    event = {"Records": [{"s3": {"object": {"key": "test_file.csv"}}}]}
+
+    with patch("transform.convert_to_parquet", return_value="mock_parquet_data"), \
+         patch("transform.calculate_fuel_usage_increase", return_value="mock_dataframe_fuel_usage_increase"), \
+         patch("transform.calculate_time_increase", return_value="mock_dataframe_time_increase"), \
+         patch("transform.update_visibility", return_value="mock_dataframe_visibility"), \
+         patch("transform.update_wind_direction", return_value="mock_dataframe_wind"), \
+         patch("transform.drop_and_rename_columns", return_value="mock_dataframe_dropped"), \
+         patch("transform.generate_new_column", return_value="mock_dataframe_with_precip"), \
+         patch("transform.convert_csv_to_dataframe", return_value="mock_dataframe"), \
+         patch("transform.fetch_csv_from_s3", return_value="mock_csv_data"):
+        
+        with caplog.at_level(logging.ERROR):
+            response = lambda_handler(event, {})
+
+    assert response == "Failed to store file in S3"
+    assert "Failed to store file in S3: S3 storage error" in caplog.text
