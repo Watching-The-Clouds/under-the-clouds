@@ -320,6 +320,7 @@ def convert_to_parquet(ready_basic_endpoint):
     """
 
     parquet_buffer = io.BytesIO()
+    
     ready_basic_endpoint.to_parquet(parquet_buffer, index=False)
 
     parquet_body = parquet_buffer.getvalue()
