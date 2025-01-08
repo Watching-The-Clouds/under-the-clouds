@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_log_group" "extract_log_group" {
-    name                = "/aws/lambda/extract"
+    name                = "/aws/lambda/lambda_extract"
     retention_in_days   = 30 # ADJUST AS NECESSARY
     tags                =  {
         name        = "Extract Lambda log group"
@@ -38,7 +38,7 @@ resource "aws_cloudwatch_metric_alarm" "error_count_alarm_for_extract_lambda" {
 }
 
 resource "aws_cloudwatch_log_group" "transform_log_group" {
-    name                = "/aws/lambda/transform"
+    name                = "/aws/lambda/lambda_transform"
     retention_in_days   = 30 # ADJUST AS NECESSARY
     tags                =  {
         name        = "Transform Lambda log group"
