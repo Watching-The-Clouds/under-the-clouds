@@ -106,4 +106,20 @@ def test_convert_csv_to_dataframe_failure(mock_convert_csv_to_dataframe, caplog)
     assert response == "Failed to convert .csv to dataframe"
     assert "Failed to convert .csv to dataframe: DataFrame conversion error" in caplog.text
 
+@patch("transform.generate_new_column", side_effect=Exception("Generate new column error"))
+def test_generate_new_column_failure(mock_generate_new_column, caplog):
+
+    event = {"Records": [{"s3": {"object": {"key": "test_file.csv"}}}]}
+
+    with patch("transform.fetch_csv_from_s3", return_value="mock_csv_data"), \
+         patch("transform.convert_csv_to_dataframe", return_value="mock_dataframe"):
+        
+        with caplog.at_level(logging.ERROR):
+            response = lambda_handler(event, {})
+
+    assert response == "Failed to generate precipitation column"
+    assert "Failed to generate precipitation column: Generate new column error" in caplog.text
+
+
+
 
