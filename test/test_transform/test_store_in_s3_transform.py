@@ -19,18 +19,19 @@ def s3_client():
 
 def test_store_in_s3_success(s3_client):
     processed_bucket = 'test-bucket'
-    file_directory = 'test-data/test.parquet'
-    parquet_body = "id,name\n2643743,London"
+    file_directory = 'test-data/test.csv'
+    parquet_body = b"id,name\n2643743,London"
     
     store_in_s3(s3_client, parquet_body, processed_bucket, file_directory)
-    
-    response = s3_client.get_object(Bucket=processed_bucket, Key=file_directory)
 
-    assert response['Body'].read().decode() == parquet_body
+    expected_file_directory = 'test-data/test.parquet'
+    response = s3_client.get_object(Bucket=processed_bucket, Key=expected_file_directory)
+    
+    assert response['Body'].read() == parquet_body
 
 def test_store_in_s3_failure_invalid_bucket(s3_client):
     processed_bucket = 'invalid-test-bucket'
-    file_directory = 'test-data/test.parquet'
+    file_directory = 'test-data/test.csv'
     parquet_body = "id,name\n2643743,London"
     
     with pytest.raises(s3_client.exceptions.NoSuchBucket):

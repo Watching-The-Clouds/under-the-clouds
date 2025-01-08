@@ -104,6 +104,10 @@ def get_direction(degrees):
     """
     Helper function to map degrees to cardinal directions.
     """
+
+    if degrees == 360:
+        degrees = 0
+
     directions = {
         (348.75, 360): "North",
         (0, 11.25): "North",
@@ -142,6 +146,7 @@ def update_wind_direction(df):
     Returns:
         an updated Pandas dataframe
     """
+    
     df_copy = df.copy()
     df_copy["wind_direction"] = df_copy["wind_direction"].apply(get_direction)
 
@@ -315,6 +320,7 @@ def convert_to_parquet(ready_basic_endpoint):
     """
 
     parquet_buffer = io.BytesIO()
+    
     ready_basic_endpoint.to_parquet(parquet_buffer, index=False)
 
     parquet_body = parquet_buffer.getvalue()
@@ -324,6 +330,7 @@ def convert_to_parquet(ready_basic_endpoint):
 
 def store_in_s3(s3_client, parquet_body, processed_bucket, file_directory):
     """
+    Updates directory from .csv to .parquet
     Uploads binary of parquet file to a named AWS S3 bucket in .parquet format
 
     Parameters:
@@ -332,5 +339,7 @@ def store_in_s3(s3_client, parquet_body, processed_bucket, file_directory):
         processed_bucket (str): S3 bucket name
         file_directory (str): S3 file directory and file name
     """
+
+    file_directory = file_directory.rsplit('.', 1)[0] + '.parquet'
 
     s3_client.put_object(Body=parquet_body, Bucket=processed_bucket, Key=file_directory)
