@@ -44,7 +44,7 @@ resource "aws_iam_policy" "transform_lambda_policy" {
           "logs:PutLogEvents"
         ],
         Effect = "Allow",
-        Resource = "arn:aws:logs:eu-west-2:619071356744:log-group:/aws/lambda/transform:*"
+        Resource = "arn:aws:logs:eu-west-2:619071356744:log-group:/aws/lambda/lambda_transform:*"
       },
       {
         Action = ["sns:Publish"],

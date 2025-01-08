@@ -1,7 +1,7 @@
 resource "aws_db_instance" "weather_db" {
   identifier           = "weather-forecasts"
   engine              = "postgres"
-  engine_version      = "13.7"
+  engine_version      = "13.12"
   instance_class      = "db.t3.micro"
   allocated_storage   = 20
   storage_encrypted   = true
