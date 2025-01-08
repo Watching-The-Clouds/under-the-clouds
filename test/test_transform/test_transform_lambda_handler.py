@@ -94,7 +94,16 @@ def test_create_s3_client_failure(mock_create_s3_client, caplog):
     assert response == "Failed to create S3 client."
     assert "Failed to create S3 client: S3 client error" in caplog.text
 
-if __name__ == "__main__":
-    unittest.main()
+@patch("transform.convert_csv_to_dataframe", side_effect=Exception("DataFrame conversion error"))
+def test_convert_csv_to_dataframe_failure(mock_convert_csv_to_dataframe, caplog):
+
+    event = {"Records": [{"s3": {"object": {"key": "test_file.csv"}}}]}
+
+    with patch("transform.fetch_csv_from_s3", return_value="mock_csv_data"):
+        with caplog.at_level(logging.ERROR):  
+            response = lambda_handler(event, {})
+
+    assert response == "Failed to convert .csv to dataframe"
+    assert "Failed to convert .csv to dataframe: DataFrame conversion error" in caplog.text
 
 
