@@ -37,3 +37,13 @@ variable "openweather_api_key" {
     type = string
     default = ""
 }
+
+variable "database_user" {
+    type = string
+    default = ""
+}
+
+variable "database_password" {
+    type = string
+    default = ""
+}

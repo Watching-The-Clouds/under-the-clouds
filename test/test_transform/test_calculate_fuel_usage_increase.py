@@ -20,13 +20,12 @@ def test_returns_new_columns(sample_dataframe):
     for col in expected_columns:
         assert col in result.columns
 
-
 def test_dataframe_immutability(sample_dataframe):
     original_df = sample_dataframe.copy()
     _ = calculate_fuel_usage_increase(sample_dataframe)
     
     pd.testing.assert_frame_equal(sample_dataframe, original_df)
-
+    
 
 def test_returns_correctfuel_coefficients(sample_dataframe):
     result = calculate_fuel_usage_increase(sample_dataframe)
