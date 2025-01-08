@@ -135,6 +135,18 @@ def test_drop_and_rename_columns_failure(mock_drop_and_rename_columns, caplog):
     assert response == "Failed to drop and rename columns"
     assert "Failed to drop and rename columns: Drop and rename columns error" in caplog.text
 
+@patch("transform.update_wind_direction", side_effect=Exception("Update wind direction error"))
+def test_update_wind_direction_failure(mock_update_wind_direction, caplog):
 
+    event = {"Records": [{"s3": {"object": {"key": "test_file.csv"}}}]}
 
+    with patch("transform.fetch_csv_from_s3", return_value="mock_csv_data"), \
+         patch("transform.convert_csv_to_dataframe", return_value="mock_dataframe"), \
+         patch("transform.generate_new_column", return_value="mock_dataframe_with_precip"), \
+         patch("transform.drop_and_rename_columns", return_value="mock_dataframe_dropped"):
+        
+        with caplog.at_level(logging.ERROR):
+            response = lambda_handler(event, {})
 
+    assert response == "Failed to update wind directions"
+    assert "Failed to update wind directions: Update wind direction error" in caplog.text
