@@ -25,7 +25,19 @@ table_name = "INSERT NAME HERE"
 
 def lambda_handler(event, context):    
     """
-    WORDS
+    Function loads Parquet binary data into RDS database
+
+    - Create S3 client
+    - Collect Parquet data from processed S3 bucket
+    - Convert Parquet data to Pandas dataframe
+    - Store dataframe in RDS
+
+        Parameters:
+            event: JSON-formatted document passed when handler invoked
+            context (optional): methods/properties related to handler
+
+        Returns:
+            string declaring success or failure
     """
 
     try:
