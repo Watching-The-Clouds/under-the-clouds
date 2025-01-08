@@ -150,3 +150,21 @@ def test_update_wind_direction_failure(mock_update_wind_direction, caplog):
 
     assert response == "Failed to update wind directions"
     assert "Failed to update wind directions: Update wind direction error" in caplog.text
+
+@patch("transform.update_visibility", side_effect=Exception("Update visibility error"))
+def test_update_visibility_failure(mock_update_visibility, caplog):
+
+    event = {"Records": [{"s3": {"object": {"key": "test_file.csv"}}}]}
+
+    with patch("transform.fetch_csv_from_s3", return_value="mock_csv_data"), \
+         patch("transform.convert_csv_to_dataframe", return_value="mock_dataframe"), \
+         patch("transform.generate_new_column", return_value="mock_dataframe_with_precip"), \
+         patch("transform.drop_and_rename_columns", return_value="mock_dataframe_dropped"), \
+         patch("transform.update_wind_direction", return_value="mock_dataframe_wind"):
+        
+        with caplog.at_level(logging.ERROR):
+            response = lambda_handler(event, {})
+
+    assert response == "Failed to update visibility"
+    assert "Failed to update visibility descriptions: Update visibility error" in caplog.text
+
