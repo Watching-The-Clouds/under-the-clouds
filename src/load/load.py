@@ -4,7 +4,7 @@ from load_utils import (
     create_s3_client,
     fetch_parquet_from_s3,
     convert_parquet_to_dataframe,
-    write_parquet_to_rds
+    write_dataframe_to_rds
 )
 
 logging.basicConfig(
@@ -68,7 +68,7 @@ def lambda_handler(event, context):
         return "Failed to convert Parquet to Dataframe"
 
     try:
-        write_parquet_to_rds(df, table_name, db_config)
+        write_dataframe_to_rds(df, table_name, db_config)
     except Exception as e:
         logging.error("Failed to store data in RDS: %s", e)
         return "Failed to store data in RDS"
