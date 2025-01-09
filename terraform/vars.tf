@@ -22,6 +22,11 @@ variable "lambda_transform_source_dir" {
     default = "../src/transform/"
 }
 
+variable "lambda_load_source_dir" {
+    type = string
+    default = "../src/load/"
+}
+
 variable "lambda_comp_exclude_list" {
     type = list(string)
     default = [".pytest_cache", "__pycache__", "test"]
@@ -34,6 +39,16 @@ variable "layer_requests_file" {
 }
 
 variable "openweather_api_key" {
+    type = string
+    default = ""
+}
+
+variable "database_user" {
+    type = string
+    default = ""
+}
+
+variable "database_password" {
     type = string
     default = ""
 }
