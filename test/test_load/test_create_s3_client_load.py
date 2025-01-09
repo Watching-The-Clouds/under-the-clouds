@@ -1,4 +1,4 @@
-from transform_utils import create_s3_client
+from load_utils import create_s3_client
 from moto import mock_aws
 from unittest.mock import patch
 from botocore.exceptions import NoCredentialsError
@@ -12,14 +12,14 @@ def test_create_s3_client_success():
     assert hasattr(s3_client, "list_buckets")
 
 
-@patch("transform_utils.boto3.client")
+@patch("load_utils.boto3.client")
 def test_create_s3_no_credentials(mock_boto_client):
     mock_boto_client.side_effect = NoCredentialsError()
 
     with pytest.raises(NoCredentialsError):
         create_s3_client()
 
-@patch("transform_utils.boto3.client")
+@patch("load_utils.boto3.client")
 def test_create_s3_client_calls_boto3_with_s3(mock_boto_client):
     mock_s3_client = mock_boto_client.return_value 
 

@@ -46,7 +46,7 @@ def convert_parquet_to_dataframe(parquet_buffer):
 
     return df
 
-def write_parquet_to_rds(df, table_name, db_config):
+def write_dataframe_to_rds(df, table_name, db_config):
     """
     Writes a pandas DataFrame to a PostgreSQL table.
 
@@ -64,7 +64,7 @@ def write_parquet_to_rds(df, table_name, db_config):
     
     engine = create_engine(db_url)
 
-    # Set index = False to NOT include a new index column    
-    df.to_sql(table_name, engine,if_exists="append", index=False)
+    # Set index = True to include a new index column    
+    df.to_sql(table_name, engine,if_exists="append", index=True)
 
     return None
