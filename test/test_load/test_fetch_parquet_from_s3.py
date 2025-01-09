@@ -1,7 +1,6 @@
 from load_utils import fetch_parquet_from_s3
 from moto import mock_aws
 from unittest.mock import patch
-from botocore.exceptions import NoCredentialsError
 import pytest
 from io import BytesIO
 from unittest.mock import MagicMock
