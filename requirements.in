@@ -6,3 +6,5 @@ pytest-cov
 moto
 pandas
 pyarrow
+sqlalchemy
+psycopg

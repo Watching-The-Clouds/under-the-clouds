@@ -103,7 +103,7 @@ def lambda_handler(event, context):
 
     try:
         ready_basic_endpoint = calculate_fuel_usage_increase(df_time)
-        logging.info(f"Calculated fuel usage coefficients. Final DataFrame shape: {ready_basic_endpoint.shape}")
+        logging.info(f"Calculated fuel usage coefficients.")
     except Exception as e:
         logging.error("Failed to calculate fuel usage: %s", e)
         return "Failed to calculate fuel usage"
