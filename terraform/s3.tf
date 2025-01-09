@@ -66,3 +66,21 @@ resource "aws_s3_object" "lambda-transform" {
     source      = data.archive_file.lambda_transform.output_path
     etag        = filemd5(data.archive_file.lambda_transform.output_path)
 }
+
+resource "aws_s3_bucket_notification" "process_bucket_notification" {
+  bucket = aws_s3_bucket.s3_processing.id
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.lambda_load.arn
+    events              = ["s3:ObjectCreated:*"]
+  }
+  depends_on = [aws_lambda_permission.s3_load_trigger ]
+}
+
+resource "aws_lambda_permission" "s3_load_trigger" {
+  statement_id  = "AllowS3Invoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda_load.function_name
+  principal     = "s3.amazonaws.com"
+  source_arn    = aws_s3_bucket.s3_processing.arn
+}
