@@ -46,7 +46,7 @@ def convert_parquet_to_dataframe(parquet_buffer):
 
     return df
 
-def write_parquet_to_rds(df, table_name, db_config):
+def write_dataframe_to_rds(df, table_name, db_config):
     """
     Writes a pandas DataFrame to a PostgreSQL table.
 
