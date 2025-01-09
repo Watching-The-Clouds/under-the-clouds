@@ -1,5 +1,6 @@
 import logging
 import urllib.parse
+import os
 from load_utils import (
     create_s3_client,
     fetch_parquet_from_s3,
@@ -14,12 +15,12 @@ logging.basicConfig(
 processed_bucket = "watching-the-clouds-processing"
 
 db_config = {
-    "host": "<RDS-endpoint>",
-    "port": "<port>",
-    "dbname": "<database-name>",
-    "user": "<username>",
-    "password": "<password>"
-    }
+    "host": os.environ["DB_HOST"],
+    "port": os.environ["DB_PORT"],
+    "dbname": os.environ["DB_NAME"],
+    "user": os.environ["DB_USER"],
+    "password": os.environ["DB_PASSWORD"]
+}
 
 table_name = "INSERT NAME HERE"
 
