@@ -64,7 +64,7 @@ def write_parquet_to_rds(df, table_name, db_config):
     
     engine = create_engine(db_url)
 
-    # Set index = False to NOT include a new index column    
-    df.to_sql(table_name, engine,if_exists="append", index=False)
+    # Set index = True to include a new index column    
+    df.to_sql(table_name, engine,if_exists="append", index=True)
 
     return None
