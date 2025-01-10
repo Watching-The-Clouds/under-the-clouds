@@ -51,6 +51,17 @@ resource "aws_iam_policy" "load_lambda_policy" {
           "rds-data:BatchExecuteStatement"
         ],
         Resource = aws_db_instance.weather_db.arn
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "ec2:CreateNetworkInterface",
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DeleteNetworkInterface",
+          "ec2:AssignPrivateIpAddresses",
+          "ec2:UnassignPrivateIpAddresses"
+        ],
+        Resource = "*"
       }
     ]
   })
