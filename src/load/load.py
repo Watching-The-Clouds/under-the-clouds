@@ -22,7 +22,7 @@ db_config = {
     "password": os.environ["DB_PASSWORD"]
 }
 
-table_name = "INSERT NAME HERE"
+table_name = "weather_forecasts"
 
 def lambda_handler(event, context):    
     """

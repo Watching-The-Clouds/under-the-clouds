@@ -22,7 +22,7 @@ resource "aws_lambda_function" "lambda_load" {
             database         = aws_db_instance.weather_db.endpoint
             code_bucket      = aws_s3_bucket.s3_code.bucket
             DB_HOST     = aws_db_instance.weather_db.endpoint
-            DB_PORT     = aws_db_instance.weather_db.port
+            DB_PORT     = tostring(aws_db_instance.weather_db.port)
             DB_NAME     = aws_db_instance.weather_db.db_name
             DB_USER     = var.database_user
             DB_PASSWORD = var.database_password
