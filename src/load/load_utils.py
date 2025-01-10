@@ -3,6 +3,7 @@ from io import BytesIO
 from sqlalchemy import create_engine
 import boto3
 import pandas as pd
+import logging
 
 def create_s3_client():
     """
@@ -60,6 +61,8 @@ def write_dataframe_to_rds(df, table_name, db_config):
     """
 
     # https://www.learnaws.org/2022/08/30/aws-rds-sqlalchemy/#postgres
+    logging.info(f"DB Host: {db_config['host']}")
+    logging.info(f"DB Port: {db_config['port']}")
     db_url = f"postgresql+psycopg2://{db_config['user']}:{db_config['password']}@{db_config['host']}:{db_config['port']}/{db_config['dbname']}"
     
     engine = create_engine(db_url)
