@@ -65,11 +65,9 @@ def write_dataframe_to_rds(df, table_name, db_config):
     logging.info(f"Host: {db_config['host']}")
     logging.info(f"Port: {db_config['port']}")
     
-    port = int(db_config['port'])
-    db_url = f"postgresql+psycopg2://{db_config['user']}:{db_config['password']}@{db_config['host']}:{port}/{db_config['dbname']}"
     
-    logging.info(f"DB URL (without credentials): postgresql+psycopg2://user:***@{db_config['host']}:{port}/{db_config['dbname']}")
-    
+    db_url = f"postgresql+psycopg2://{db_config['user']}:{db_config['password']}@{db_config['host']}/{db_config['dbname']}"
+        
     engine = create_engine(db_url)
 
     # Set index = True to include a new index column    
