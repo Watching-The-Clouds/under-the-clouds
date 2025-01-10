@@ -36,11 +36,16 @@ resource "aws_lambda_function" "lambda_load" {
     }
 }
 
+# Get the default VPC (using data source)
+data "aws_vpc" "default" {
+  default = true
+}
+
 # Create security group for Lambda
 resource "aws_security_group" "lambda_sg" {
   name        = "lambda-load-sg"
   description = "Security group for Load Lambda"
-  vpc_id      = aws_vpc.default.id
+  vpc_id      = data.aws_vpc.default.id  # Reference the data source
 
   egress {
     from_port   = 0
