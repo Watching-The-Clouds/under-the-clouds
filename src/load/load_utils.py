@@ -50,27 +50,17 @@ def convert_parquet_to_dataframe(parquet_buffer):
 def write_dataframe_to_rds(df, table_name, db_config):
     """
     Writes a pandas DataFrame to a PostgreSQL table.
-
-    Parameters:
-        df: The DataFrame to write.
-        table_name: Name of the target table in the PostgreSQL database.
-        db_config: A dictionary containing database configuration:
-
-    Returns:
-        None
     """
-
-    # https://www.learnaws.org/2022/08/30/aws-rds-sqlalchemy/#postgres
     logging.info(f"Writing to RDS with config:")
     logging.info(f"Host: {db_config['host']}")
     logging.info(f"Port: {db_config['port']}")
     
+    # Split host if it contains port
+    host = db_config['host'].split(':')[0] if ':' in db_config['host'] else db_config['host']
     
-    db_url = f"postgresql+psycopg2://{db_config['user']}:{db_config['password']}@{db_config['host']}/{db_config['dbname']}"
-        
+    db_url = f"postgresql+psycopg2://{db_config['user']}:{db_config['password']}@{host}:{db_config['port']}/{db_config['dbname']}"
+    
+    logging.info(f"DB URL (without credentials): postgresql+psycopg2://user:***@{host}:{db_config['port']}/{db_config['dbname']}")
+    
     engine = create_engine(db_url)
-
-    # Set index = True to include a new index column    
-    df.to_sql(table_name, engine,if_exists="append", index=True)
-
-    return None
+    df.to_sql(table_name, engine, if_exists="append", index=True)
