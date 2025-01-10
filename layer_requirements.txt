@@ -1,2 +1,4 @@
 requests==2.31.0
 urllib3<2.0.0
+sqlalchemy==2.0.36
+psycopg==3.2.3
