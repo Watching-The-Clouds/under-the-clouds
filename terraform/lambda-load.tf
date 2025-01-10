@@ -40,7 +40,7 @@ resource "aws_lambda_function" "lambda_load" {
 resource "aws_security_group" "lambda_sg" {
   name        = "lambda-load-sg"
   description = "Security group for Load Lambda"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = aws_vpc.default.id
 
   egress {
     from_port   = 0
