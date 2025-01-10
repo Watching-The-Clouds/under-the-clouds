@@ -5,6 +5,14 @@ data "archive_file" "lambda_load" {
     output_path = "${path.module}/../.remote_deployment/lambda_load.zip"
 }
 
+# Get default VPC subnets
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
+
 resource "aws_lambda_function" "lambda_load" {
     filename          = data.archive_file.lambda_load.output_path
     function_name     = "lambda_load"
@@ -31,7 +39,7 @@ resource "aws_lambda_function" "lambda_load" {
     } 
 
     vpc_config {
-      subnet_ids         = [aws_db_instance.weather_db.subnet_group_name]
+      subnet_ids         = data.aws_subnets.default.ids
       security_group_ids = [aws_security_group.lambda_sg.id]
     }
 }
@@ -45,7 +53,7 @@ data "aws_vpc" "default" {
 resource "aws_security_group" "lambda_sg" {
   name        = "lambda-load-sg"
   description = "Security group for Load Lambda"
-  vpc_id      = data.aws_vpc.default.id  # Reference the data source
+  vpc_id      = data.aws_vpc.default.id
 
   egress {
     from_port   = 0
