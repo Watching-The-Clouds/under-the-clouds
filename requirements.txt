@@ -49,6 +49,10 @@ pandas==2.2.3
     # via -r requirements.in
 pluggy==1.5.0
     # via pytest
+psycopg==3.2.3
+    # via -r requirements.in
+pyarrow==18.1.0
+    # via -r requirements.in
 pycparser==2.22
     # via cffi
 pytest==8.3.4
@@ -79,10 +83,16 @@ s3transfer==0.10.4
     # via boto3
 six==1.17.0
     # via python-dateutil
+sqlalchemy==2.0.36
+    # via -r requirements.in
 tomli==2.2.1
     # via
     #   coverage
     #   pytest
+typing-extensions==4.12.2
+    # via
+    #   psycopg
+    #   sqlalchemy
 tzdata==2024.2
     # via pandas
 urllib3==1.26.20
