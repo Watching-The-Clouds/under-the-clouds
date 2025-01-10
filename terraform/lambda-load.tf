@@ -29,4 +29,23 @@ resource "aws_lambda_function" "lambda_load" {
             DB_PASSWORD = var.database_password
       }
     } 
+
+    vpc_config {
+      subnet_ids         = [aws_db_instance.weather_db.subnet_group_name]
+      security_group_ids = [aws_security_group.lambda_sg.id]
+    }
+}
+
+# Create security group for Lambda
+resource "aws_security_group" "lambda_sg" {
+  name        = "lambda-load-sg"
+  description = "Security group for Load Lambda"
+  vpc_id      = aws_vpc.main.id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
