@@ -18,7 +18,7 @@ resource "aws_lambda_function" "lambda_load" {
     function_name     = "lambda_load"
     role             = aws_iam_role.load_lambda_role.arn
     handler          = "load.lambda_handler"
-    timeout          = 180
+    timeout          = 600
     source_code_hash = data.archive_file.lambda_load.output_base64sha256
     runtime          = "python3.12"
     layers          = [aws_lambda_layer_version.layer_requests.arn,
