@@ -38,7 +38,7 @@ resource "aws_iam_policy" "extract_lambda_policy" {
         ],
         
         Effect = "Allow",
-        Resource = "arn:aws:logs:eu-west-2:c:log-group:/aws/lambda/lambda_extract:*"
+        Resource = "arn:aws:logs:eu-west-2:619071356744:log-group:/aws/lambda/lambda_extract:*"
       },
       # {
       #   Action = ["secretsmanager:GetSecretValue"],
