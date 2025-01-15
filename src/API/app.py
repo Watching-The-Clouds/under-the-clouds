@@ -2,13 +2,11 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from src.API.connect import connect_to_db
 
-
 app = FastAPI()
 
 @app.get("/healthcheck")
 def healthcheck():
-    return {"status": "ok"}
-
+    return {"status": "all okay :)"}
 
 @app.get("/get_weather_impact")
 def get_weather_impact():
