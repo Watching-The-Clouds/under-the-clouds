@@ -41,12 +41,20 @@ resource "aws_security_group" "rds_sg" {
   name        = "weather-db-security-group"
   description = "Security group for weather forecast database"
 
-  # Allow inbound PostgreSQL traffic (port 5432) from your IP or VPC
+  # Allow access from VPC CIDR
   ingress {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = ["172.31.0.0/16"]  # Replace with your IP or VPC CIDR
+    cidr_blocks = ["172.31.0.0/16"]  # Your VPC CIDR
+  }
+
+  # Allow access from Lambda security group
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.lambda_sg.id]
   }
 
   # Allow all outbound traffic
