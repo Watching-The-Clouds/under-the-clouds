@@ -3,7 +3,7 @@ import pandas as pd
 from sqlalchemy.engine import Engine
 from load_utils import write_dataframe_to_rds
 
-def test_write_parquet_to_rds():
+def test_write_dataframe_to_rds():
     mock_df = pd.DataFrame({
         "id": [1, 2, 3],
         "name": ["Alice", "Bob", "Charlie"],
