@@ -13,7 +13,7 @@ resource "aws_db_instance" "weather_db" {
   skip_final_snapshot = true  # For development; set to false in production
   
   # Free tier settings
-  publicly_accessible = false
+  publicly_accessible = true
   multi_az           = false
 
   # Enable automated backups
