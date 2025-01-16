@@ -13,7 +13,7 @@ resource "aws_db_instance" "weather_db" {
   skip_final_snapshot = true  # For development; set to false in production
   
   # Free tier settings
-  publicly_accessible = false
+  publicly_accessible = true
   multi_az           = false
 
   # Enable automated backups
@@ -46,7 +46,18 @@ resource "aws_security_group" "rds_sg" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = ["172.31.0.0/16"]  # Your VPC CIDR
+    cidr_blocks = ["172.31.0.0/16"]  # VPC CIDR
+  }
+
+  # New rules for specific IPs
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = [
+      "165.120.154.33/32",  # First IP
+      "152.37.100.144/32"   # Second IP
+    ]
   }
 
   # Allow access from Lambda security group
