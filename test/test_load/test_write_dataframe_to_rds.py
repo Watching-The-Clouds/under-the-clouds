@@ -37,12 +37,11 @@
 #         mock_to_sql.assert_called_once_with(table_name, mock_engine, if_exists="append", index=False)
 
 import pandas as pd
-import pytest
 from unittest.mock import patch, MagicMock
 from sqlalchemy.engine.base import Engine
 from load_utils import write_dataframe_to_rds  # Replace with the actual import path
 
-def test_write_dataframe_to_rds(mocker):
+def test_write_dataframe_to_rds():
     # Mock the DataFrame
     data = {"col1": [1, 2, 3], "col2": ["A", "B", "C"]}
     df = pd.DataFrame(data)
@@ -58,16 +57,19 @@ def test_write_dataframe_to_rds(mocker):
     table_name = "test_table"
     
     # Patch create_engine and to_sql
-    mock_engine = MagicMock(spec=Engine)
-    mock_create_engine = mocker.patch("your_module.create_engine", return_value=mock_engine)
-    mock_to_sql = mocker.patch.object(pd.DataFrame, "to_sql", return_value=None)
-    
-    # Call the function
-    write_dataframe_to_rds(df, table_name, db_config)
-    
-    # Assertions
-    host = db_config['host'].split(':')[0] if ':' in db_config['host'] else db_config['host']
-    db_url = f"postgresql+psycopg2://{db_config['user']}:{db_config['password']}@{host}:{db_config['port']}/{db_config['dbname']}"
-    
-    mock_create_engine.assert_called_once_with(db_url)
-    mock_to_sql.assert_called_once_with(table_name, mock_engine, if_exists="append", index=False)
+    with patch("your_module.create_engine") as mock_create_engine, \
+         patch.object(pd.DataFrame, "to_sql") as mock_to_sql:
+        
+        mock_engine = MagicMock(spec=Engine)
+        mock_create_engine.return_value = mock_engine
+        
+        # Call the function
+        write_dataframe_to_rds(df, table_name, db_config)
+        
+        # Assertions
+        host = db_config['host'].split(':')[0] if ':' in db_config['host'] else db_config['host']
+        db_url = f"postgresql+psycopg2://{db_config['user']}:{db_config['password']}@{host}:{db_config['port']}/{db_config['dbname']}"
+        
+        mock_create_engine.assert_called_once_with(db_url)
+        mock_to_sql.assert_called_once_with(table_name, mock_engine, if_exists="append", index=False)
+
