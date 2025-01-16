@@ -34,4 +34,4 @@ def test_write_parquet_to_rds():
         )
         mock_create_engine.assert_called_once_with(expected_db_url)
 
-        mock_to_sql.assert_called_once_with(table_name, mock_engine, if_exists="append", index=True)
+        mock_to_sql.assert_called_once_with(table_name, mock_engine, if_exists="append", index=False)
