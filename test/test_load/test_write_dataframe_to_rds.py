@@ -57,7 +57,7 @@ def test_write_dataframe_to_rds():
     table_name = "test_table"
     
     # Patch create_engine and to_sql
-    with patch("your_module.create_engine") as mock_create_engine, \
+    with patch("load_utils.create_engine") as mock_create_engine, \
          patch.object(pd.DataFrame, "to_sql") as mock_to_sql:
         
         mock_engine = MagicMock(spec=Engine)
@@ -72,4 +72,3 @@ def test_write_dataframe_to_rds():
         
         mock_create_engine.assert_called_once_with(db_url)
         mock_to_sql.assert_called_once_with(table_name, mock_engine, if_exists="append", index=False)
-
