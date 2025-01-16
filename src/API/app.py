@@ -36,7 +36,7 @@ def get_weather_impact():
 @app.get("/trimmed2")
 def get_weather_impact():
     conn = connect_to_db()
-    query = "SELECT index, city, date_time FROM weather_forecasts ORDER BY index ASC LIMIT 40"
+    query = "SELECT index, city, date_time FROM weather_forecasts WHERE date_time LIKE '%2025-01-16%' ORDER BY index ASC LIMIT 40"
     with conn.cursor(row_factory=psycopg.rows.dict_row) as cursor:
         cursor.execute(query)
         weather_impact = cursor.fetchall()
