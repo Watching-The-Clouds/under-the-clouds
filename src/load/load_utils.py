@@ -61,6 +61,10 @@ def write_dataframe_to_rds(df, table_name, db_config):
     db_url = f"postgresql+psycopg2://{db_config['user']}:{db_config['password']}@{host}:{db_config['port']}/{db_config['dbname']}"
     
     logging.info(f"DB URL (without credentials): postgresql+psycopg2://user:***@{host}:{db_config['port']}/{db_config['dbname']}")
+
+    if "id" not in df.columns:
+            df = df.reset_index(drop=True)
+            df.insert(0, "id", range(1, len(df) + 1))    
     
     engine = create_engine(db_url)
-    df.to_sql(table_name, engine, if_exists="append", index=True)
+    df.to_sql(table_name, engine, if_exists="append", index=False)
