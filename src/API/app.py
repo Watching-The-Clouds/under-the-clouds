@@ -2,8 +2,6 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from src.API.connect import connect_to_db
 import psycopg
-# from psycopg2.extras import DictCursorfrom mangum import Mangum
-
 
 app = FastAPI()
 
@@ -30,28 +28,7 @@ def get_weather_impact():
     with conn.cursor(row_factory=psycopg.rows.dict_row) as cursor:
         cursor.execute(query)
         weather_impact = cursor.fetchall()
-
     conn.close()
     return weather_impact
 
-@app.get("/trimmed2")
-def get_weather_impact():
-    conn = connect_to_db()
-    query = "SELECT index, city, date_time FROM weather_forecasts WHERE date_time LIKE '%2025-01-16%' ORDER BY date_time ASC LIMIT 40"
-    with conn.cursor(row_factory=psycopg.rows.dict_row) as cursor:
-        cursor.execute(query)
-        weather_impact = cursor.fetchall()
-
-    conn.close()
-    return weather_impact
-
-@app.get("/trimmed3")
-def get_weather_impact():
-    conn = connect_to_db()
-    query = "SELECT * FROM weather_forecasts ORDER BY index DESC LIMIT 40"
-    with conn.cursor(row_factory=psycopg.rows.dict_row) as cursor:
-        cursor.execute(query)
-        weather_impact = cursor.fetchall()
-
-    conn.close()
-    return weather_impact
+# Add ability for user to input values for speed and distance of journey (defaults: speed = 20 mph, distance = 1 mile)
