@@ -268,8 +268,7 @@ def calculate_time_increase(basic_endpoint):
     df = basic_endpoint.copy()
     df["weather_impact_code"] = df["weather_id"].apply(get_weather_impact)
     df[["speed_coefficient_low", "speed_coefficient_high"]] = df.apply(
-        get_speed_coefficients, axis=1
-    )
+        get_speed_coefficients, axis=1)
 
     return df
 
