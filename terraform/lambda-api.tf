@@ -1,3 +1,10 @@
+data "archive_file" "lambda_api" {
+    type        = "zip"
+    source_dir  = "${path.module}/${var.lambda_api_source_dir}"
+    excludes    = var.lambda_comp_exclude_list
+    output_path = "${path.module}/../.remote_deployment/lambda_api.zip"
+}
+
 resource "aws_lambda_function" "lambda_api" {
     function_name       = "lambda_api"
     s3_bucket           = aws_s3_bucket.s3_code.bucket
@@ -8,7 +15,10 @@ resource "aws_lambda_function" "lambda_api" {
     source_code_hash    = data.archive_file.lambda_api.output_base64sha256
     runtime             = "python3.12"
     layers              = [aws_lambda_layer_version.layer_requests.arn]
-    depends_on          = [aws_lambda_layer_version.layer_requests]
+    depends_on = [
+        aws_s3_object.lambda_api_zip,
+        aws_lambda_layer_version.layer_requests
+    ]
     environment {
       variables = {
             CODE_BUCKET         = aws_s3_bucket.s3_code.bucket
@@ -23,12 +33,6 @@ resource "aws_lambda_function" "lambda_api" {
       subnet_ids         = data.aws_subnets.default.ids
       security_group_ids = [aws_security_group.lambda_api_sg.id]
     }
-}
-data "archive_file" "lambda_api" {
-    type        = "zip"
-    source_dir  = "${path.module}/${var.lambda_api_source_dir}"
-    excludes    = var.lambda_comp_exclude_list
-    output_path = "${path.module}/../.remote_deployment/lambda_api.zip"
 }
 
 resource "aws_security_group" "lambda_api_sg" {
