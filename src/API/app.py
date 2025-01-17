@@ -2,6 +2,7 @@ from fastapi import FastAPI, Query
 from pydantic import BaseModel
 from src.API.connect import connect_to_db
 import psycopg
+from mangum import Mangum
 
 app = FastAPI()
 
@@ -70,3 +71,4 @@ def get_impact_on_time(
 
     return results
 
+handler = Mangum(app)
