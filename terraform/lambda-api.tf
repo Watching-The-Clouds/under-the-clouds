@@ -16,7 +16,7 @@ resource "aws_lambda_function" "lambda_api" {
     runtime             = "python3.12"
     layers              = [aws_lambda_layer_version.layer_requests.arn]
     depends_on = [
-        aws_s3_object.lambda_api_zip,
+        data.archive_file.lambda_api,
         aws_lambda_layer_version.layer_requests
     ]
     environment {
