@@ -6,9 +6,8 @@ data "archive_file" "lambda_api" {
 }
 
 resource "aws_lambda_function" "lambda_api" {
+    filename          = data.archive_file.lambda_api.output_path
     function_name       = "lambda_api"
-    s3_bucket           = aws_s3_bucket.s3_code.bucket
-    s3_key              = "lambda_api.zip"
     role                = aws_iam_role.api_role.arn
     handler             = "app.handler"
     timeout             = 180
