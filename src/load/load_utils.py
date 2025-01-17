@@ -68,4 +68,11 @@ def write_dataframe_to_rds(df, table_name, db_config):
         df.insert(0, "index", range(1, len(df) + 1))  # Add `index` as the first column 
     
     engine = create_engine(db_url)
+
+    with engine.connect() as connection:
+        result_object = connection.execute(f"SELECT COUNT(*) FROM {table_name}")
+        current_row_count = result_object.scalar()
+
+    df['Index'] = range(current_row_count, current_row_count + len(df))
+
     df.to_sql(table_name, engine, if_exists="append", index=False)
