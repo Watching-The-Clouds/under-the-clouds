@@ -36,3 +36,6 @@ def test_write_dataframe_to_rds():
         mock_create_engine.assert_called_once_with(db_url)
         mock_connection.execute.assert_called_once_with(f"SELECT COUNT(*) FROM {table_name}")
         mock_to_sql.assert_called_once_with(table_name, mock_engine, if_exists="append", index=False)
+
+
+
