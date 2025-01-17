@@ -31,7 +31,7 @@ def test_write_dataframe_to_rds():
         write_dataframe_to_rds(df, table_name, db_config)
         
         host = db_config['host'].split(':')[0] if ':' in db_config['host'] else db_config['host']
-        db_url = f"postgresql+psycopg2://{db_config['user']}:{db_config['password']}@{host}:{db_config['port']}/{db_config['dbname']}"
+        db_url = f"postgresql://{db_config['user']}:{db_config['password']}@{host}:{db_config['port']}/{db_config['dbname']}"
         
         mock_create_engine.assert_called_once_with(db_url)
         mock_connection.execute.assert_called_once_with(f"SELECT COUNT(*) FROM {table_name}")

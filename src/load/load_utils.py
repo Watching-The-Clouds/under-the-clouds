@@ -62,10 +62,6 @@ def write_dataframe_to_rds(df, table_name, db_config):
     db_url = f"postgresql://{db_config['user']}:{db_config['password']}@{host}:{db_config['port']}/{db_config['dbname']}"
     
     logging.info(f"DB URL (without credentials): postgresql://user:***@{host}:{db_config['port']}/{db_config['dbname']}")
-
-    if "index" not in df.columns:
-        df = df.reset_index(drop=True)  # Reset index to ensure unique sequential values
-        df.insert(0, "index", range(1, len(df) + 1))  # Add `index` as the first column 
     
     engine = create_engine(db_url)
 
