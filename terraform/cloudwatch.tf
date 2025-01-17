@@ -114,3 +114,42 @@ resource "aws_cloudwatch_metric_alarm" "error_count_alarm_for_load_lambda" {
     treat_missing_data          = "notBreaching"
     insufficient_data_actions   = []
 }
+
+resource "aws_cloudwatch_log_group" "api_log_group" {
+    name            = "/aws/lambda/lambda_api"
+    retention_in_days   = 30
+    tags                =  {
+        name        = "API Lambda log group"
+        environment = "dev"
+        description = "API Lambda log group"
+    }
+}
+
+resource "aws_cloudwatch_log_metric_filter" "log_errors_for_api_lambda" {
+    name            = "api_error"
+    pattern         = "ERROR"
+    log_group_name  = aws_cloudwatch_log_group.api_log_group.name
+    metric_transformation {
+      name          = "api_error"
+      namespace     = "log_errors"
+      value         = 1
+    }
+}
+
+resource "aws_cloudwatch_metric_alarm" "error_count_alarm_for_api_lambda" {
+    alarm_name                  = "api_error"
+    comparison_operator         = "GreaterThanOrEqualToThreshold"
+    evaluation_periods          = 1
+    metric_name                 = aws_cloudwatch_log_metric_filter.log_errors_for_api_lambda.name
+    namespace                   = "log_errors"
+    period                      = 600
+    statistic                   = "SampleCount"
+    threshold                   = 1
+    alarm_actions               = [aws_sns_topic.alert_sre.arn]
+    dimensions = {
+        "FunctionName" = "lambda_api"
+    }
+    alarm_description           = "Error logged in API Lambda"
+    treat_missing_data          = "notBreaching"
+    insufficient_data_actions   = []
+}

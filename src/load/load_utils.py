@@ -58,9 +58,10 @@ def write_dataframe_to_rds(df, table_name, db_config):
     # Split host if it contains port
     host = db_config['host'].split(':')[0] if ':' in db_config['host'] else db_config['host']
     
-    db_url = f"postgresql+psycopg2://{db_config['user']}:{db_config['password']}@{host}:{db_config['port']}/{db_config['dbname']}"
+    # Updated to use psycopg3 connection string
+    db_url = f"postgresql://{db_config['user']}:{db_config['password']}@{host}:{db_config['port']}/{db_config['dbname']}"
     
-    logging.info(f"DB URL (without credentials): postgresql+psycopg2://user:***@{host}:{db_config['port']}/{db_config['dbname']}")
+    logging.info(f"DB URL (without credentials): postgresql://user:***@{host}:{db_config['port']}/{db_config['dbname']}")
     
     engine = create_engine(db_url)
     df.to_sql(table_name, engine, if_exists="append", index=True)

@@ -65,7 +65,10 @@ resource "aws_security_group" "rds_sg" {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    security_groups = [aws_security_group.lambda_sg.id]
+    security_groups = [
+      aws_security_group.lambda_sg.id,      # Load Lambda
+      aws_security_group.lambda_api_sg.id   # API Lambda
+    ]
   }
 
   # Allow all outbound traffic

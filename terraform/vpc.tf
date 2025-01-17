@@ -17,4 +17,36 @@ data "aws_route_table" "default" {
     name   = "association.main"
     values = ["true"]
   }
+}
+
+# Add these VPC endpoints for Lambda to access AWS services
+resource "aws_vpc_endpoint" "logs" {
+  vpc_id            = data.aws_vpc.default.id
+  service_name      = "com.amazonaws.eu-west-2.logs"
+  vpc_endpoint_type = "Interface"
+  subnet_ids        = data.aws_subnets.default.ids
+  security_group_ids = [aws_security_group.lambda_api_sg.id]
+
+  private_dns_enabled = true
+}
+
+resource "aws_vpc_endpoint" "sns" {
+  vpc_id            = data.aws_vpc.default.id
+  service_name      = "com.amazonaws.eu-west-2.sns"
+  vpc_endpoint_type = "Interface"
+  subnet_ids        = data.aws_subnets.default.ids
+  security_group_ids = [aws_security_group.lambda_api_sg.id]
+
+  private_dns_enabled = true
+}
+
+# If you're using API Gateway, you'll also need this
+resource "aws_vpc_endpoint" "execute_api" {
+  vpc_id            = data.aws_vpc.default.id
+  service_name      = "com.amazonaws.eu-west-2.execute-api"
+  vpc_endpoint_type = "Interface"
+  subnet_ids        = data.aws_subnets.default.ids
+  security_group_ids = [aws_security_group.lambda_api_sg.id]
+
+  private_dns_enabled = true
 } 
