@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - irinasplayground  # Adjust as needed for feature branch patterns
+      - brads
 
 jobs:
   run-tests:
