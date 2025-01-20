@@ -1,5 +1,0 @@
-,city,date_time,temp_max,temp_min,feels_like,weather_description,weather_id,precipitation,wind_direction,wind_speed,visibility,visibility_description,weather_impact_code,speed_coefficient_low,speed_coefficient_high,fuel_usage_coefficient_low,fuel_usage_coefficient_high
-0,Zocca,2022-08-30 15:00:00,297.87,296.76,296.98,light rain,500,0.26,North,0.62,10000,high,light_rain,0.97,0.87,1.1,1.15
-1,Zocca,2022-08-30 18:00:00,295.45,292.84,295.59,light rain,500,0.57,South-Southeast,1.97,10000,high,light_rain,0.97,0.87,1.1,1.15
-2,Zocca,2022-08-30 21:00:00,292.46,290.31,292.54,light rain,500,0.49,South-Southwest,2.66,10000,high,light_rain,0.97,0.87,1.1,1.15
-3,Zocca,2022-09-04 12:00:00,294.93,294.93,294.83,overcast clouds,804,0.0,North-Northeast,1.14,10000,high,clear,1.0,1.0,1.0,1.0

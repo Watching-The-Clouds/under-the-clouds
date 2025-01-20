@@ -1,5 +1,0 @@
-clouds.all,coord.lat,coord.lon,country,dt,dt_txt,id,main.feels_like,main.grnd_level,main.humidity,main.pressure,main.sea_level,main.temp,main.temp_kf,main.temp_max,main.temp_min,name,pop,population,rain.3h,snow.3h,sunrise,sunset,sys.pod,timezone,visibility,weather.0.description,weather.0.icon,weather.0.id,weather.0.main,wind.deg,wind.gust,wind.speed
-100,44.34,10.99,IT,1661871600,2022-08-30 15:00:00,3163858,296.98,933,69,1015,1015,296.76,-1.11,297.87,296.76,Zocca,0.32,4593,0.26,0,1661834187,1661882248,d,7200,10000,light rain,10d,500,Rain,349,1.18,0.62
-96,44.34,10.99,IT,1661882400,2022-08-30 18:00:00,3163858,295.59,931,71,1015,1015,295.45,2.61,295.45,292.84,Zocca,0.33,4593,0.57,0,1661834187,1661882248,n,7200,10000,light rain,10n,500,Rain,157,3.39,1.97
-68,44.34,10.99,IT,1661893200,2022-08-30 21:00:00,3163858,292.54,931,80,1015,1015,292.46,2.15,292.46,290.31,Zocca,0.7,4593,0.49,0,1661834187,1661882248,n,7200,10000,light rain,10n,500,Rain,210,3.58,2.66
-88,44.34,10.99,IT,1662292800,2022-09-04 12:00:00,3163858,294.83,935,64,1018,1018,294.93,0,294.93,294.93,Zocca,0,4593,0,0,1661834187,1661882248,d,7200,10000,overcast clouds,04d,804,Clouds,17,1.57,1.14

@@ -1,7 +1,7 @@
 PROJECT_NAME = watching-the-clouds
 REGION = eu-west-2
 PYTHON_INTERPRETER = python3
-PYTHONPATH:=$(shell pwd)/src/transform:$(shell pwd)/src/extract:$(shell pwd)/src/load
+PYTHONPATH:=$(shell pwd)/src/transform:$(shell pwd)/src/extract:$(shell pwd)/src/load:$(shell pwd)/src/API
 SHELL := /bin/bash
 PROFILE = default
 PIP:=pip

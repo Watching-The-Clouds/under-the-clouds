@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Query
 from pydantic import BaseModel
-from src.API.connect import connect_to_db
+from connect import connect_to_db
 import psycopg
 from mangum import Mangum
 
