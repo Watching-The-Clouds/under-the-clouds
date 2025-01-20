@@ -1,9 +1,6 @@
 import psycopg
 import os
-from dotenv import load_dotenv
 import logging
-
-load_dotenv()
 
 def connect_to_db():
     # Add logging to debug connection issues
