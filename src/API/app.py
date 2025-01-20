@@ -8,11 +8,11 @@ app = FastAPI(root_path="/dev")
 
 columns_to_include = "index, city, date_time, feels_like, weather_description, speed_coefficient_high, speed_coefficient_low"
 
-@app.get("/healthcheck")
+@app.get("/dev/healthcheck")
 def healthcheck():
     return {"status": "all okay :)"}
 
-@app.get("/get_all")
+@app.get("/dev/get_all")
 def get_weather_impact():
     conn = connect_to_db()
     query = "SELECT * FROM weather_forecasts"
@@ -22,7 +22,7 @@ def get_weather_impact():
     conn.close()
     return weather_impact
 
-@app.get("/get_weather_impact")
+@app.get("/dev/get_weather_impact")
 def get_weather_impact():
     conn = connect_to_db()
     cursor = conn.cursor()
@@ -34,7 +34,7 @@ def get_weather_impact():
 
 # Add ability for user to input values for speed and distance of journey (defaults: speed = 20 mph, distance = 1 mile)
 
-@app.get("/trimmed")
+@app.get("/dev/trimmed")
 def get_weather_impact():
     conn = connect_to_db()
     query = "SELECT city, date_time, feels_like, weather_description, visibility_description, speed_coefficient_low, speed_coefficient_high, fuel_usage_coefficient_low, fuel_usage_coefficient_high FROM weather_forecasts ORDER BY index DESC LIMIT 40"
@@ -45,7 +45,7 @@ def get_weather_impact():
     return weather_impact
 
 # Call with /get_impact_on_time?speed=30&distance=5 for custom values
-@app.get("/get_time_impact")
+@app.get("/dev/get_time_impact")
 def get_impact_on_time(
     speed: float = Query(20.0, description="Speed in mph (default: 20 mph)"),
     distance: float = Query(1.0, description="Distance in miles (default: 1 mile)")

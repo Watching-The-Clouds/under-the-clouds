@@ -26,6 +26,8 @@ resource "aws_apigatewayv2_stage" "lambda_stage" {
       protocol      = "$context.protocol"
       responseLength = "$context.responseLength"
       path          = "$context.path"
+      errorMessage  = "$context.error.message"
+      integrationError = "$context.integration.error"
     })
   }
 }
