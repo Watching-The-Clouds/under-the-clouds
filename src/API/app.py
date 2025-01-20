@@ -4,7 +4,7 @@ from connect import connect_to_db
 import psycopg
 from mangum import Mangum
 
-app = FastAPI()
+app = FastAPI(root_path="/dev")
 
 columns_to_include = "index, city, date_time, feels_like, weather_description, speed_coefficient_high, speed_coefficient_low"
 
